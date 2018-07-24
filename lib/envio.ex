@@ -5,11 +5,7 @@ defmodule Envio do
   Provides handy functions to publish messages, subscribe to messages, etc.
   """
 
-  @doc """
-  Get list of active channels.
-  """
-  @spec subscriptions() :: map()
-  def subscriptions do
-    Envio.Channels.subscriptions()
-  end
+  @spec register(atom() | {atom(), atom()}, list({atom(), %Envio.Channel{}})) :: :ok | {:error, {:already_registered, %Envio.Channel{}}}
+  def register(host, channels), do: Envio.Channels.register(host, channels)
+
 end

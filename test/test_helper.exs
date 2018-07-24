@@ -8,7 +8,15 @@ defmodule Sucker do
   def suck(what), do: IO.inspect(what, label: "Sucked")
 end
 
-{:ok, _} = Registry.register(Envio.Registry, "spitter.foo", {:dispatch, {Sucker, :suck}})
-{:ok, _} = Registry.register(Envio.Registry, "spitter.main", {:dispatch, {Sucker, :suck}})
+defmodule PubSucker do
+  use Envio.Subscriber, channels: [{Spitter, :foo}]
+  def handle_envio(message, state),
+    do: IO.inspect({message, state}, label: "PubSucked")
+end
+
+Envio.register({Sucker, :suck}, dispatch: %Envio.Channel{source: Spitter, name: :foo})
+Envio.register({Sucker, :suck}, dispatch: %Envio.Channel{source: Spitter, name: "main"})
+
+PubSucker.start_link
 
 ExUnit.start()

@@ -25,18 +25,11 @@ defmodule Envio.Channels do
   @doc """
   Get list of active subscriptions.
   """
-  @spec subscriptions() :: map()
-  def subscriptions(), do: GenServer.call(__MODULE__, :subscriptions)
+  @spec state() :: %State{}
+  def state(), do: GenServer.call(__MODULE__, :state)
 
   @doc """
   Registers new channel.
-
-  ## Examples
-
-      iex> Envio.Channels.register(Bazz, dispatch: %Envio.Channel{source: Foo, name: :bar})
-      :ok
-      iex> Envio.Channels.subscriptions() |> Map.keys()
-      [Bazz]
   """
   @spec register(atom() | {atom(), atom()}, list({atom(), %Channel{}})) :: :ok | {:error, {:already_registered, %Channel{}}}
   def register(host, channels),
@@ -45,8 +38,7 @@ defmodule Envio.Channels do
   ##############################################################################
 
   @doc false
-  def handle_call(:subscriptions, _from, state),
-    do: {:reply, state.subscriptions, %State{} = state}
+  def handle_call(:state, _from, %State{} = state), do: {:reply, state, state}
 
   @doc false
   def handle_call({:register, {host, channels}}, _from, %State{} = state) do

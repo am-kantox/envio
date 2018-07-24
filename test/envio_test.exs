@@ -5,5 +5,6 @@ defmodule Envio.Test do
   test "allows registering and dispatching" do
     Spitter.spit(%{bar: 42})
     Spitter.spit(:foo, %{bar: 42})
+    IO.inspect(Envio.Channels.state, label: "State")
   end
 end

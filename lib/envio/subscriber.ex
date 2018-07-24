@@ -34,7 +34,7 @@ defmodule Envio.Subscriber do
                 do: :lists.reverse([message | tail])
             _ -> [message | state.messages]
           end
-        {:noreply, %State{state | messages: messages}}
+        {:noreply, %Envio.State{state | messages: messages}}
       end
 
       defoverridable handle_envio: 2
@@ -43,25 +43,28 @@ defmodule Envio.Subscriber do
 
       @doc false
       def start_link(_opts \\ []),
-        do: GenServer.start_link(__MODULE__, %State{}, name: __MODULE__)
+        do: GenServer.start_link(__MODULE__, %Envio.State{}, name: __MODULE__)
 
-      @channels =
-        opts
-        |> Keyword.get(:channels, [])
-        |> Enum.map(fn
-             {source, channel} -> {:pub_sub, %Envio.Channel{source: source, name: channel}}
-           end)
-        |> MapSet.new()
+      @channels opts
+                |> Keyword.get(:channels, [])
+                |> Enum.map(fn
+                    {source, channel} -> {:pub_sub, %Envio.Channel{source: source, name: channel}}
+                  end)
+                |> MapSet.new()
 
       @doc false
-      def init(%State{} = state) do
+      def init(%Envio.State{} = state) do
         Envio.Channels.register(__MODULE__, @channels)
-        {:ok, %State{state | channels: @channels, subscriptions: %{__MODULE__ => @channels}}}
+        {:ok, %Envio.State{state | channels: @channels, subscriptions: %{__MODULE__ => @channels}}}
       end
 
       @doc false
       def handle_info({:envio, {channel, message}}, state),
         do: handle_envio(message, state)
+      # def handle_info(any, state) do
+      #   IO.inspect(any, label: "Unexpected")
+      #   {:noreply, state}
+      # end
 
       ##########################################################################
 
