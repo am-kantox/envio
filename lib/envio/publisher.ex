@@ -46,7 +46,8 @@ defmodule Envio.Publisher do
               apply(module, function, [message])
             catch
               kind, reason ->
-                formatted = Exception.format(kind, reason, __STACKTRACE__)
+                # formatted = Exception.format(kind, reason, __STACKTRACE__)
+                formatted = Exception.format(kind, reason)
                 Logger.error("#{__MODULE__}.broadcast/2 failed with #{formatted}")
             end
           end
