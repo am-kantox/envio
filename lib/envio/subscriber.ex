@@ -54,17 +54,20 @@ defmodule Envio.Subscriber do
 
       @doc false
       def init(%Envio.State{} = state) do
+        Enum.each(@channels, fn
+          {:pub_sub, channel} ->
+            Registry.register(Envio.Registry, Envio.Channel.fq_name(channel), {:pub_sub, __MODULE__})
+          {kind, channel} ->
+            Logger.warn("Wrong type #{kind} for channel #{inspect(channel)}. Must be :pub_sub.")
+        end)
         Envio.Channels.register(__MODULE__, @channels)
+        IO.inspect(:envio_register, label: "Callback")
         {:ok, %Envio.State{state | channels: @channels, subscriptions: %{__MODULE__ => @channels}}}
       end
 
       @doc false
       def handle_info({:envio, {channel, message}}, state),
         do: handle_envio(message, state)
-      # def handle_info(any, state) do
-      #   IO.inspect(any, label: "Unexpected")
-      #   {:noreply, state}
-      # end
 
       ##########################################################################
 

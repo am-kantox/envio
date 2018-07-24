@@ -17,6 +17,4 @@ end
 Envio.register({Sucker, :suck}, dispatch: %Envio.Channel{source: Spitter, name: :foo})
 Envio.register({Sucker, :suck}, dispatch: %Envio.Channel{source: Spitter, name: "main"})
 
-PubSucker.start_link
-
 ExUnit.start()

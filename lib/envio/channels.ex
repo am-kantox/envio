@@ -42,23 +42,40 @@ defmodule Envio.Channels do
 
   @doc false
   def handle_call({:register, {host, channels}}, _from, %State{} = state) do
-    old_channels = Map.get(state.subscriptions, host, MapSet.new())
-    obsoletes = MapSet.intersection(old_channels, MapSet.new(channels))
-    Enum.each(obsoletes, fn {kind, channel} ->
-      Registry.unregister_match(Envio.Registry, Envio.Channel.fq_name(channel), {kind, host})
-    end)
-    old_channels = MapSet.difference(old_channels, obsoletes)
-    channels =
-      Enum.reduce(channels, old_channels, fn {kind, channel}, acc ->
-        with {:ok, _} <- Registry.register(Envio.Registry, Envio.Channel.fq_name(channel), {kind, host}) do
-          MapSet.put(acc, {kind, channel})
-        else
-          error ->
-            Logger.warn("Failed to register #{inspect({kind, channel})}. Error: #{inspect(error)}.")
-            acc
-        end
-      end)
+    channels = MapSet.new(channels)
+
+    old_channels =
+      state.subscriptions
+      |> Map.get(host, MapSet.new())
+      |> do_unregister({host, channels})
+      |> MapSet.difference(channels)
+
+    channels = Enum.reduce(channels, old_channels, &do_register(host, &1, &2))
 
     {:reply, :ok, %State{state | subscriptions: Map.put(state.subscriptions, host, channels)}}
   end
+
+  ##############################################################################
+
+  defp do_unregister(old_channels, {host, neu_channels}) do
+    old_channels
+    |> MapSet.intersection(neu_channels)
+    |> Enum.each(fn {kind, channel} ->
+          Registry.unregister_match(Envio.Registry, Envio.Channel.fq_name(channel), {kind, host})
+        end)
+    old_channels
+  end
+
+  defp do_register(host, {:dispatch, channel}, acc) do
+    with {:ok, _} <- Registry.register(Envio.Registry, Envio.Channel.fq_name(channel), {:dispatch, host}) do
+      MapSet.put(acc, {:dispatch, channel})
+    else
+      error ->
+        Logger.warn("Failed to register dispatcher #{inspect(channel)}. Error: #{inspect(error)}.")
+        acc
+    end
+  end
+
+  defp do_register(host, {:pub_sub, channel}, acc),
+    do: MapSet.put(acc, {:pub_sub, channel})
 end
