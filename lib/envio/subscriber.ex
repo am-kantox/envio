@@ -31,9 +31,12 @@ defmodule Envio.Subscriber do
           case Enum.count(state.messages) do
             n when n > 10 ->
               with [_ | tail] <- :lists.reverse(state.messages),
-                do: :lists.reverse([message | tail])
-            _ -> [message | state.messages]
+                   do: :lists.reverse([message | tail])
+
+            _ ->
+              [message | state.messages]
           end
+
         {:noreply, %Envio.State{state | messages: messages}}
       end
 
@@ -41,37 +44,39 @@ defmodule Envio.Subscriber do
 
       ##########################################################################
 
-      @doc false
       def start_link(_opts \\ []),
         do: GenServer.start_link(__MODULE__, %Envio.State{}, name: __MODULE__)
 
       @channels opts
                 |> Keyword.get(:channels, [])
                 |> Enum.map(fn
-                    {source, channel} -> {:pub_sub, %Envio.Channel{source: source, name: channel}}
-                  end)
+                  {source, channel} -> {:pub_sub, %Envio.Channel{source: source, name: channel}}
+                end)
                 |> MapSet.new()
 
-      @doc false
+      @impl true
       def init(%Envio.State{} = state) do
         Enum.each(@channels, fn
           {:pub_sub, channel} ->
-            Registry.register(Envio.Registry, Envio.Channel.fq_name(channel), {:pub_sub, __MODULE__})
+            Registry.register(
+              Envio.Registry,
+              Envio.Channel.fq_name(channel),
+              {:pub_sub, __MODULE__}
+            )
+
           {kind, channel} ->
             Logger.warn("Wrong type #{kind} for channel #{inspect(channel)}. Must be :pub_sub.")
         end)
+
         Envio.Channels.register(__MODULE__, @channels)
-        IO.inspect(:envio_register, label: "Callback")
-        {:ok, %Envio.State{state | channels: @channels, subscriptions: %{__MODULE__ => @channels}}}
+        {:ok, %Envio.State{state | subscriptions: %{__MODULE__ => @channels}}}
       end
 
-      @doc false
+      @impl true
       def handle_info({:envio, {channel, message}}, state),
         do: handle_envio(message, state)
 
       ##########################################################################
-
-
     end
   end
 end

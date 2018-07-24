@@ -31,7 +31,8 @@ defmodule Envio.Channels do
   @doc """
   Registers new channel.
   """
-  @spec register(atom() | {atom(), atom()}, list({atom(), %Channel{}})) :: :ok | {:error, {:already_registered, %Channel{}}}
+  @spec register(atom() | {atom(), atom()}, list({atom(), %Channel{}})) ::
+          :ok | {:error, {:already_registered, %Channel{}}}
   def register(host, channels),
     do: GenServer.call(__MODULE__, {:register, {host, channels}})
 
@@ -61,21 +62,26 @@ defmodule Envio.Channels do
     old_channels
     |> MapSet.intersection(neu_channels)
     |> Enum.each(fn {kind, channel} ->
-          Registry.unregister_match(Envio.Registry, Envio.Channel.fq_name(channel), {kind, host})
-        end)
+      Registry.unregister_match(Envio.Registry, Envio.Channel.fq_name(channel), {kind, host})
+    end)
+
     old_channels
   end
 
   defp do_register(host, {:dispatch, channel}, acc) do
-    with {:ok, _} <- Registry.register(Envio.Registry, Envio.Channel.fq_name(channel), {:dispatch, host}) do
+    with {:ok, _} <-
+           Registry.register(Envio.Registry, Envio.Channel.fq_name(channel), {:dispatch, host}) do
       MapSet.put(acc, {:dispatch, channel})
     else
       error ->
-        Logger.warn("Failed to register dispatcher #{inspect(channel)}. Error: #{inspect(error)}.")
+        Logger.warn(
+          "Failed to register dispatcher #{inspect(channel)}. Error: #{inspect(error)}."
+        )
+
         acc
     end
   end
 
-  defp do_register(host, {:pub_sub, channel}, acc),
+  defp do_register(_host, {:pub_sub, channel}, acc),
     do: MapSet.put(acc, {:pub_sub, channel})
 end

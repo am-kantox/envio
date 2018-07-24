@@ -3,7 +3,6 @@ defmodule Envio.State do
   Global Envio state.
   """
 
-  defstruct channels: [],
-            subscriptions: %{},
+  defstruct subscriptions: %{},
             messages: []
 end

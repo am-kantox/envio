@@ -10,8 +10,12 @@ end
 
 defmodule PubSucker do
   use Envio.Subscriber, channels: [{Spitter, :foo}]
-  def handle_envio(message, state),
-    do: IO.inspect({message, state}, label: "PubSucked")
+
+  def handle_envio(message, state) do
+    {:noreply, state} = super(message, state)
+    IO.inspect({message, state}, label: "PubSucked")
+    {:noreply, state}
+  end
 end
 
 Envio.register({Sucker, :suck}, dispatch: %Envio.Channel{source: Spitter, name: :foo})
