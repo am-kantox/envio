@@ -1,6 +1,6 @@
-# Envio
+# ![Logo](/stuff/logo-100x100.png?raw=true) Envio
 
-**Application-wide registry with handy helpers to ease dispatching**
+[![CircleCI](https://circleci.com/gh/am-kantox/envio.svg?style=svg)](https://circleci.com/gh/am-kantox/envio) **Application-wide registry with handy helpers to ease dispatching**
 
 ## Installation
 
