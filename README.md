@@ -1,4 +1,4 @@
-# ![Logo](/stuff/logo-100x100.png?raw=true) Envio
+# ![Logo](/stuff/logo-48x48.png?raw=true) Envio
 
 [![CircleCI](https://circleci.com/gh/am-kantox/envio.svg?style=svg)](https://circleci.com/gh/am-kantox/envio) **Application-wide registry with handy helpers to ease dispatching**
 
