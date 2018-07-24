@@ -7,6 +7,8 @@ defmodule Envio.Channels do
 
   use GenServer
 
+  require Logger
+
   alias Envio.{Channel, State}
 
   @doc """
@@ -21,48 +23,50 @@ defmodule Envio.Channels do
   def init(%State{} = state), do: {:ok, state}
 
   @doc """
-  Get list of active channels.
+  Get list of active subscriptions.
   """
-  @spec all() :: list(%Channel{})
-  def all(), do: GenServer.call(__MODULE__, :all)
+  @spec subscriptions() :: map()
+  def subscriptions(), do: GenServer.call(__MODULE__, :subscriptions)
 
   @doc """
   Registers new channel.
 
   ## Examples
 
-      iex> Envio.Channels.register(%Envio.Channel{source: Foo, name: :bar})
+      iex> Envio.Channels.register(Bazz, dispatch: %Envio.Channel{source: Foo, name: :bar})
       :ok
-      iex> Envio.Channels.all()
-      [%Envio.Channel{source: Foo, name: :bar}]
-      iex> Envio.Channels.register(%Envio.Channel{source: Foo, name: :bar})
-      {:error, {:already_registered, %Envio.Channel{name: :bar, source: Foo}}}
+      iex> Envio.Channels.subscriptions() |> Map.keys()
+      [Bazz]
   """
-  @spec register(%Channel{}) :: :ok | {:error, {:already_registered, %Channel{}}}
-  def register(%Channel{} = channel),
-    do: GenServer.call(__MODULE__, {:register, channel})
+  @spec register(atom() | {atom(), atom()}, list({atom(), %Channel{}})) :: :ok | {:error, {:already_registered, %Channel{}}}
+  def register(host, channels),
+    do: GenServer.call(__MODULE__, {:register, {host, channels}})
 
   ##############################################################################
 
   @doc false
-  def handle_call(:all, _from, state),
-    do: {:reply, state.channels, %State{} = state}
+  def handle_call(:subscriptions, _from, state),
+    do: {:reply, state.subscriptions, %State{} = state}
 
   @doc false
-  def handle_call({:register, channel}, _from, %State{} = state) do
-    existing =
-      Enum.find(
-        state.channels,
-        &(&1.name == channel.name && &1.source == channel.source)
-      )
+  def handle_call({:register, {host, channels}}, _from, %State{} = state) do
+    old_channels = Map.get(state.subscriptions, host, MapSet.new())
+    obsoletes = MapSet.intersection(old_channels, MapSet.new(channels))
+    Enum.each(obsoletes, fn {kind, channel} ->
+      Registry.unregister_match(Envio.Registry, Envio.Channel.fq_name(channel), {kind, host})
+    end)
+    old_channels = MapSet.difference(old_channels, obsoletes)
+    channels =
+      Enum.reduce(channels, old_channels, fn {kind, channel}, acc ->
+        with {:ok, _} <- Registry.register(Envio.Registry, Envio.Channel.fq_name(channel), {kind, host}) do
+          MapSet.put(acc, {kind, channel})
+        else
+          error ->
+            Logger.warn("Failed to register #{inspect({kind, channel})}. Error: #{inspect(error)}.")
+            acc
+        end
+      end)
 
-    do_register(channel, state, existing)
+    {:reply, :ok, %State{state | subscriptions: Map.put(state.subscriptions, host, channels)}}
   end
-
-  defp do_register(channel, state, nil) do
-    {:reply, :ok, %State{state | channels: [channel | state.channels]}}
-  end
-
-  defp do_register(_, state, existing),
-    do: {:reply, {:error, {:already_registered, existing}}, state}
 end

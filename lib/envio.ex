@@ -8,8 +8,8 @@ defmodule Envio do
   @doc """
   Get list of active channels.
   """
-  @spec channels() :: list(%Envio.Channel{})
-  def channels do
-    Envio.Channels.all()
+  @spec subscriptions() :: map()
+  def subscriptions do
+    Envio.Channels.subscriptions()
   end
 end
