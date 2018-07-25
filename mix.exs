@@ -2,8 +2,8 @@ defmodule Envio.MixProject do
   use Mix.Project
 
   @app :envio
-  @app_name "Envío"
-  @version "0.2.1"
+  # @app_name "Envío"
+  @version "0.2.2"
 
   def project do
     [
@@ -58,7 +58,7 @@ defmodule Envio.MixProject do
 
   defp docs() do
     [
-      main: @app_name,
+      main: "Envio",
       source_ref: "v#{@version}",
       canonical: "http://hexdocs.pm/#{@app}",
       logo: "stuff/logo-48x48.png",

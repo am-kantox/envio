@@ -53,7 +53,8 @@ defmodule Envio.Channels do
 
     channels = Enum.reduce(channels, old_channels, &do_register(host, &1, &2))
 
-    {:reply, :ok, %State{state | subscriptions: Map.put(state.subscriptions, host, channels)}}
+    {:reply, channels,
+     %State{state | subscriptions: Map.put(state.subscriptions, host, channels)}}
   end
 
   ##############################################################################
