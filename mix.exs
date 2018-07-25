@@ -2,8 +2,8 @@ defmodule Envio.MixProject do
   use Mix.Project
 
   @app :envio
-  @app_name "Envío"
-  @version "0.2.2"
+  @app_name "envío"
+  @version "0.2.3"
 
   def project do
     [
@@ -64,7 +64,7 @@ defmodule Envio.MixProject do
       logo: "stuff/logo-48x48.png",
       source_url: "https://github.com/am-kantox/#{@app}",
       extras: [
-        "stuff/envío.md"
+        "stuff/#{@app_name}.md"
       ],
       groups_for_modules: [
         # Envio

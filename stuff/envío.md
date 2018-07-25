@@ -40,7 +40,7 @@ end
 
 ### Creating a subscriber
 
-#### [`:dispatch`](https://hexdocs.pm/elixir/master/Registry.html#module-using-as-a-dispatcher)
+#### ▶ [`:dispatch`](https://hexdocs.pm/elixir/master/Registry.html#module-using-as-a-dispatcher)
 
 Simply register the handler anywhere in the code:
 
@@ -54,7 +54,7 @@ Envio.register(
 As `MyPub` publishes to the `:main` channel, `MySub.on_envio/1` will
 be called with a message passed as parameter.
 
-#### [`:pub_sub`](https://hexdocs.pm/elixir/master/Registry.html#module-using-as-a-pubsub)
+#### ▶ [`:pub_sub`](https://hexdocs.pm/elixir/master/Registry.html#module-using-as-a-pubsub)
 
 Use `Envio.Subscriber` helper to scaffold the registry subscriber. Implement
 `handle_envio/2` for custom message handling. The default implementation
