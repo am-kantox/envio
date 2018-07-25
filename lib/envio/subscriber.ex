@@ -6,7 +6,7 @@ defmodule Envio.Subscriber do
   use this helper to scaffold the registering/unregistering code.
   It turns the module into the `GenServer` and provides the handy wrapper
   for the respective `handle_info/2`. One might override
-  `handle_envio
+  `handle_envio` to implement custom handling.
 
   The typical usage would be:
 
@@ -34,11 +34,11 @@ defmodule Envio.Subscriber do
   @doc """
   The callback to subscribe stuff to `Envio`.
   """
-  @callback handle_envio(binary() | atom(), map()) ::
+  @callback handle_envio(message :: :timeout | term(), state :: State.t()) ::
               {:noreply, new_state}
               | {:noreply, new_state, timeout() | :hibernate | {:continue, term()}}
               | {:stop, reason :: term(), new_state}
-            when new_state: term()
+            when new_state: State.t()
 
   defmacro __using__(opts \\ []) do
     quote bind_quoted: [opts: opts] do
@@ -52,11 +52,6 @@ defmodule Envio.Subscriber do
       @max_messages Application.get_env(:envio, :subscriber_queue_size, 10)
 
       @impl true
-      @spec handle_envio(message :: :timeout | term(), state :: State.t()) ::
-              {:noreply, new_state}
-              | {:noreply, new_state, timeout() | :hibernate | {:continue, term()}}
-              | {:stop, reason :: term(), new_state}
-            when new_state: State.t()
       @doc """
       Default implementation of the callback invoked when the message is received.
       """
