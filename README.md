@@ -61,4 +61,10 @@ defmodule PubSucker do
 end
 ```
 
+## ToDo
+
+* Back pressure with [`GenStage`](https://hexdocs.pm/gen_stage/GenStage.html)
+for `:dispatch` kind of delivery;
+* Set of backends for easy delivery (_slack_, _redis_, _rabbit_, etc.)
+
 ## [Documentation](https://hexdocs.pm/envio)

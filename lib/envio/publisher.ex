@@ -1,14 +1,40 @@
 defmodule Envio.Publisher do
   @moduledoc """
-  Publisher interface.
+  Publisher helper scaffold.
 
-  It manages all the channels currently existing in the system.
+  Simply `use Envio.Publisher` in the module that should publish messages.
+  The `broadcast/2` function becomes available. If the optional `channel:`
+  argument is passed to `use Envio.Publisher`, this channel is considered
+  the default one and `broadcast/1` function appears to publish directly
+  to the default channel.
+
+  The ready-to-copy-paste example of usage would be:
+
+  ```elixir
+  defmodule MyPub do
+    use Envio.Publisher, channel: :main
+
+    def publish(channel, what), do: broadcast(channel, what)
+    def publish(what), do: broadcast(what)
+  end
+  ```
+
+  All the _subscribers_ of the particular channel the message was published
+  to, will either receive a message (in the case of
+  [`:pub_sub`](https://hexdocs.pm/elixir/master/Registry.html#module-using-as-a-pubsub))
+  or called back with the function provided on subscription
+  ([`:dispatch`](https://hexdocs.pm/elixir/master/Registry.html#module-using-as-a-dispatcher)).
+
+  The publisher does not wrap [`:via`](https://hexdocs.pm/elixir/master/Registry.html#module-using-in-via)
+  functionality since it makes not much sense.
+
+  For how to subscribe, see `Envio.Subscriber`.
   """
 
   @doc """
   The callback to publish stuff to `Envio`.
   """
-  @callback broadcast(binary() | atom(), map()) :: :ok
+  @callback broadcast(channel :: binary() | atom(), message :: map()) :: :ok
 
   defmacro __using__(opts \\ []) do
     quote bind_quoted: [opts: opts] do
@@ -27,14 +53,16 @@ defmodule Envio.Publisher do
       def broadcast(channel, %{} = message) when is_atom(channel),
         do: channel |> Atom.to_string() |> broadcast(message)
 
-      if is_binary(@channel) or is_atom(@channel),
-        do: def(broadcast(%{} = message), do: broadcast(@channel, message))
+      if is_binary(@channel) or is_atom(@channel) do
+        @spec broadcast(message :: map()) :: :ok
+        def broadcast(%{} = message), do: broadcast(@channel, message)
+      end
 
       defoverridable broadcast: 2
 
       ##########################################################################
 
-      @spec do_broadcast(:dispatch | :pub_sub | :both, binary(), map()) :: any()
+      @spec do_broadcast(:dispatch | :pub_sub | :both, binary(), map()) :: :ok
 
       defp do_broadcast(:both, channel, %{} = message),
         do: Enum.each(~w|pub_sub dispatch|a, &do_broadcast(&1, channel, message))
@@ -61,6 +89,7 @@ defmodule Envio.Publisher do
       end
 
       ##########################################################################
+
       @spec fq_channel(atom() | binary()) :: binary()
       defp fq_channel(channel), do: Envio.Utils.fq_name(__MODULE__, channel)
     end

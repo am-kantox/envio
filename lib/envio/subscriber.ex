@@ -29,6 +29,8 @@ defmodule Envio.Subscriber do
   ```elixir
   PubSubscriber.subscribe(%Envio.Channel{source: PubPublisher, name: :foo})
   ```
+
+  For how to publish, see `Envio.Publisher`.
   """
 
   @doc """
