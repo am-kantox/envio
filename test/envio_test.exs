@@ -3,6 +3,14 @@ defmodule Envio.Test do
   import ExUnit.CaptureIO
   doctest Envio
 
+  setup_all do
+    on_exit fn ->
+      IO.inspect Envio.Channels.state, label: "\n\nChannels"
+    end
+
+    :ok
+  end
+
   test "#dispatch with default channel" do
     assert capture_io(fn ->
              Spitter.spit(%{bar: 42})

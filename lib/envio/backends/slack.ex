@@ -3,8 +3,8 @@ defmodule Envio.Slack do
 
   alias Envio.Utils
 
-  @spec format(channel :: binary(), username :: binary(), %{required(:atom) => term()}) :: binary()
-  defp format(channel, username, %{} = message) when is_binary(channel) and is_binary(username) do
+  @spec format(%{required(:atom) => term()}) :: binary()
+  defp format(%{} = message) do
     with {text, message} <- Utils.get_delete(message, :text),
          {pretext, message} <- Utils.get_delete(message, :pretext),
          {level, message} <- Utils.get_delete(message, :level, :info),
@@ -32,8 +32,6 @@ defmodule Envio.Slack do
         |> Enum.join("\n")
 
       %{
-        channel: channel,
-        username: username,
         emoji_icon: icon,
         fallback: fallback,
         mrkdwn: true,
@@ -46,14 +44,12 @@ defmodule Envio.Slack do
 
   @spec slack!(
           hook_url :: binary(),
-          channel :: binary(),
-          username :: binary(),
           message :: %{required(:atom) => term()}
         ) :: {:ok, %HTTPoison.Response{}}
-  def slack!(hook_url, channel, username, message) do
+  def slack!(hook_url, message) do
     HTTPoison.post(
       hook_url,
-      format(channel, username, message),
+      format(message),
       [{"Content-Type", "application/json"}]
     )
   end
@@ -64,6 +60,9 @@ defmodule Envio.Slack do
   defp slack_icon(:info), do: ":information_source:"
   defp slack_icon(:warn), do: ":warning:"
   defp slack_icon(:error), do: ":exclamation:"
+  defp slack_icon(level) when is_binary(level),
+    do: level |> String.to_existing_atom() |> slack_icon()
+  defp slack_icon(_), do: slack_icon(:info)
 
   defp slack_color(:debug), do: "#AAAAAA"
   defp slack_color(:info), do: "good"

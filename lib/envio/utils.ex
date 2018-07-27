@@ -57,6 +57,7 @@ defmodule Envio.Utils do
       "42"
   """
   @spec config_value(input :: binary() | {:system, binary()}) :: term()
+  def config_value(nil), do: fn -> nil end
   def config_value({:system, env_var}), do: fn -> System.get_env(env_var) end
   def config_value(var) when is_binary(var), do: fn -> var end
 
@@ -95,11 +96,12 @@ defmodule Envio.Utils do
       iex> Envio.Utils.smart_to_binary(42)
       "42"
       iex> Envio.Utils.smart_to_binary(%{foo: :bar, baz: 42})
-      ""
+      "%{baz: 42, foo: :bar}"
       iex> Envio.Utils.smart_to_binary([foo: :bar, baz: 42])
-      ""
+      "[foo: :bar, baz: 42]"
   """
   @spec smart_to_binary(input :: term()) :: binary()
+  def smart_to_binary(list) when is_list(list), do: inspect(list)
   def smart_to_binary(string) when is_binary(string), do: string
 
   def smart_to_binary(whatever) do
