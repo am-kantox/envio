@@ -3,6 +3,8 @@ defmodule Envio.Slack do
 
   alias Envio.Utils
 
+  @behaviour Envio.Backend
+
   @spec format(%{required(:atom) => term()}) :: binary()
   defp format(%{} = message) do
     with {text, message} <- Utils.get_delete(message, :text),
@@ -42,16 +44,18 @@ defmodule Envio.Slack do
     end
   end
 
-  @spec slack!(
-          hook_url :: binary(),
-          message :: %{required(:atom) => term()}
-        ) :: {:ok, %HTTPoison.Response{}}
-  def slack!(hook_url, message) do
-    HTTPoison.post(
-      hook_url,
-      format(message),
-      [{"Content-Type", "application/json"}]
-    )
+
+  @impl true
+  def on_envio(message) do
+    case Utils.get_delete(message, :meta) do
+      {%{hook_url: hook_url}, message} ->
+        HTTPoison.post(
+          hook_url,
+          format(message),
+          [{"Content-Type", "application/json"}]
+        )
+      _ -> {:error, :no_hook_url_in_envio}
+    end
   end
 
   #############################################################################

@@ -18,6 +18,8 @@ defmodule Envio.Application do
           ]
         }
       },
+      {DynamicSupervisor, strategy: :one_for_one, name: Envio.Backends.Supervisor},
+      # %{id: Envio.Backends.Supervisor, start: {DynamicSupervisor, :start_link, [strategy: :one_for_one, name: Envio.Backends.Supervisor]}},
       %{id: Envio.Channels, start: {Envio.Channels, :start_link, []}}
     ]
 
