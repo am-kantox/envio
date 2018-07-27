@@ -30,6 +30,11 @@ defmodule Envio.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      # backends
+      {:slack, "~> 0.14"},
+      {:jason, "~> 1.0"},
+      {:httpoison, "~> 0.11 or ~> 1.0", override: true},
+      # utilities
       {:credo, "~> 0.9", only: :dev},
       {:ex_doc, "~> 0.18", only: :dev, override: true}
       # {:dep_from_hexpm, "~> 0.3.0"},
