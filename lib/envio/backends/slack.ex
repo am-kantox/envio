@@ -5,8 +5,7 @@ defmodule Envio.Slack do
 
   @spec format(channel :: binary(), username :: binary(), %{required(:atom) => term()}) :: binary()
   defp format(channel, username, %{} = message) when is_binary(channel) and is_binary(username) do
-    with {title, message} <- Utils.get_delete(message, :title),
-         {text, message} <- Utils.get_delete(message, :text),
+    with {text, message} <- Utils.get_delete(message, :text),
          {pretext, message} <- Utils.get_delete(message, :pretext),
          {level, message} <- Utils.get_delete(message, :level, :info),
          {icon, message} <- Utils.get_delete(message, :icon, slack_icon(level)) do
@@ -25,17 +24,22 @@ defmodule Envio.Slack do
           fields: fields,
           mrkdwn_in: ["title", "text", "pretext"]
         }
-        |> Map.merge(if title, do: %{title: title}, else: %{})
-        |> Map.merge(if text, do: %{text: text}, else: %{})
-        |> Map.merge(if pretext, do: %{pretext: pretext}, else: %{})
+        |> Map.merge(if pretext, do: %{pretext: "```\n#{pretext}\n```"}, else: %{})
+
+      fallback =
+        [text, pretext, message]
+        |> Enum.map(&Utils.smart_to_binary/1)
+        |> Enum.join("\n")
 
       %{
         channel: channel,
         username: username,
         emoji_icon: icon,
+        fallback: fallback,
         mrkdwn: true,
         attachments: [attachments]
       }
+      |> Map.merge(if text, do: %{text: text}, else: %{})
       |> Jason.encode!()
     end
   end
