@@ -22,4 +22,16 @@ end
 Envio.register({Sucker, :suck}, dispatch: %Envio.Channel{source: Spitter, name: :foo})
 Envio.register({Sucker, :suck}, dispatch: %Envio.Channel{source: Spitter, name: "main"})
 
+defmodule Envio.IOBackend do
+  @moduledoc false
+
+  @behaviour Envio.Backend
+
+  @impl true
+  def on_envio(message) do
+    IO.inspect(message, label: "[★Envío★]")
+  end
+end
+
 ExUnit.start()
+

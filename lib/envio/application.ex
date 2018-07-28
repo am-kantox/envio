@@ -18,7 +18,8 @@ defmodule Envio.Application do
           ]
         }
       },
-      %{id: Envio.Channels, start: {Envio.Channels, :start_link, []}}
+      %{id: Envio.Channels, start: {Envio.Channels, :start_link, []}},
+      %{id: Envio.Backends, start: {Envio.Backends, :start_link, []}}
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one)

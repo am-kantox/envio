@@ -3,7 +3,7 @@ defmodule Envio.MixProject do
 
   @app :envio
   @app_name "envío"
-  @version "0.2.3"
+  @version "0.3.0"
 
   def project do
     [
@@ -30,6 +30,11 @@ defmodule Envio.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      # backends
+      {:slack, "~> 0.14"},
+      {:jason, "~> 1.0"},
+      {:httpoison, "~> 0.11 or ~> 1.0", override: true},
+      # utilities
       {:credo, "~> 0.9", only: :dev},
       {:ex_doc, "~> 0.18", only: :dev, override: true}
       # {:dep_from_hexpm, "~> 0.3.0"},
@@ -64,7 +69,8 @@ defmodule Envio.MixProject do
       logo: "stuff/logo-48x48.png",
       source_url: "https://github.com/am-kantox/#{@app}",
       extras: [
-        "stuff/#{@app_name}.md"
+        "stuff/#{@app_name}.md",
+        "stuff/backends.md"
       ],
       groups_for_modules: [
         # Envio

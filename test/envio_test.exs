@@ -3,10 +3,18 @@ defmodule Envio.Test do
   import ExUnit.CaptureIO
   doctest Envio
 
+  setup_all do
+    on_exit fn ->
+      IO.inspect Envio.Channels.state, label: "\n\nChannels"
+    end
+
+    :ok
+  end
+
   test "#dispatch with default channel" do
     assert capture_io(fn ->
-             Spitter.spit(%{bar: 42})
-           end) == "Sucked: %{bar: 42}\n"
+             Spitter.spit(%{bar: 42, long: "blah blah blah blah blah blah blah blah"})
+           end) == ~s|Sucked: %{bar: 42, long: "blah blah blah blah blah blah blah blah"}\n|
   end
 
   test "#dispatch with explicit channel" do
@@ -30,11 +38,11 @@ defmodule Envio.Test do
     assert capture_io(fn ->
              with {:ok, _pid} <- PubSucker.start_link() do
                PubSucker.subscribe(%Envio.Channel{source: Spitter, name: :main})
-               Spitter.spit(:main, %{bar: 42})
+               Spitter.spit(:main, %{bar: 42, long: "blah blah blah blah blah blah blah blah"})
                # to allow message delivery delay
-               Process.sleep(100)
+               Process.sleep(500)
                GenServer.stop(PubSucker)
              end
-           end) =~ ~r/PubSucked: {%{bar: 42}/
+           end) =~ ~r/PubSucked: {%{bar: 42, long/
   end
 end
