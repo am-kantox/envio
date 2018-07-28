@@ -13,9 +13,10 @@ defmodule Envio.Slack do
          {icon, message} <- Utils.get_delete(message, :icon, slack_icon(level)) do
       fields =
         Enum.map(message, fn {k, v} ->
+          v = Utils.smart_to_binary(v)
           %{
             title: k,
-            value: Utils.smart_to_binary(v),
+            value: v,
             short: String.length(v) < 32
           }
         end)
