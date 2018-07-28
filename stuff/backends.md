@@ -3,13 +3,12 @@
 **Envío** supports configurable backends as subscribers with very little to none
 code. It comes with the following backends out of the box:
 
-* `Slack` — a subscriber to _envíos_ that sends all the incoming messages to
-the preconfigured slack channel
-* ... _more coming_
+* `Slack` — a subscriber to _envíos_ that sends all the incoming messages to the preconfigured slack channel
+* `IO`, `...`, _more coming_
 
-Backend is basically a supervised `GenServer` that implements [`Envio.Backend`]
+Backend is basically a supervised `GenServer` that implements `Envio.Backend`
 behaviour. Backends, provided by the core are generated based on the configuration.
-The typical config looks like this (example for `Slack`):
+The typical config looks like this (example for `Envio.Slack`):
 
 ```elixir
 config :envio, :backends, %{
@@ -21,7 +20,8 @@ config :envio, :backends, %{
 }
 ```
 `Envio.Slack`, used as a key, is a name of the module that implements the
-[`Envio.Backend`] behaviour (currently it’s the single function `on_envio/1`
+`Envio.Backend` behaviour (currently it’s the single function 
+[`Envio.Backend.on_envio/1`](Envio.Backend.html#c:on_envio/1)
 that receives a message when published by the publisher.) The value assigned
 to the key is a map of `{Envio.Publisher, :channel}` tuples to the list of
 arguments that will be injected into the message under `:meta` key.
