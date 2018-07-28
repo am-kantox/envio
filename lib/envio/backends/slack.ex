@@ -7,8 +7,9 @@ defmodule Envio.Slack do
 
   @spec format(%{required(:atom) => term()}) :: binary()
   defp format(%{} = message) do
-    with {text, message} <- Utils.get_delete(message, :text),
-         {pretext, message} <- Utils.get_delete(message, :pretext),
+    with {title, message} <- Utils.get_delete(message, :title),
+         {text, message} <- Utils.get_delete(message, :text),
+         {body, message} <- Utils.get_delete(message, :message),
          {level, message} <- Utils.get_delete(message, :level, :info),
          {icon, message} <- Utils.get_delete(message, :icon, slack_icon(level)) do
       fields =
@@ -21,16 +22,19 @@ defmodule Envio.Slack do
           }
         end)
 
+      pretext = [text, body] |> Enum.reject(&is_nil/1) |> Enum.join("\n")
+
       attachments =
         %{
           color: slack_color(level),
           fields: fields,
           mrkdwn_in: ["title", "text", "pretext"]
         }
-        |> Map.merge(if pretext, do: %{pretext: "```\n#{pretext}\n```"}, else: %{})
+        |> Map.merge(if text || body, do: %{pretext: "```\n" <> pretext <> "\n```"}, else: %{})
 
       fallback =
-        [text, pretext, message]
+        [title, text, body]
+        |> Enum.reject(&is_nil/1)
         |> Enum.map(&Utils.smart_to_binary/1)
         |> Enum.join("\n")
 
