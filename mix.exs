@@ -3,7 +3,7 @@ defmodule Envio.MixProject do
 
   @app :envio
   @app_name "envío"
-  @version "0.2.3"
+  @version "0.3.0"
 
   def project do
     [
@@ -69,7 +69,8 @@ defmodule Envio.MixProject do
       logo: "stuff/logo-48x48.png",
       source_url: "https://github.com/am-kantox/#{@app}",
       extras: [
-        "stuff/#{@app_name}.md"
+        "stuff/#{@app_name}.md",
+        "stuff/backends.md"
       ],
       groups_for_modules: [
         # Envio
