@@ -33,7 +33,7 @@ defmodule Envio.MixProject do
       # backends
       {:slack, "~> 0.14"},
       {:jason, "~> 1.0"},
-      {:httpoison, "~> 0.11 or ~> 1.0", override: true},
+      {:httpoison, "~> 0.11 or ~> 1.0"},
       # utilities
       {:credo, "~> 0.9", only: :dev},
       {:ex_doc, "~> 0.18", only: :dev, override: true}
