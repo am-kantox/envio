@@ -1,6 +1,9 @@
 # ![Envío Logo](https://github.com/am-kantox/envio/blob/master/stuff/logo-48x48.png?raw=true)   Envío
 
-**Envío** is a set of handy tools to simplify dealing with Elixir
+**Envío** is basically a `GenEvent²`, the modern idiomatic pub-sub
+implementation of event passing.
+
+In a nutshell, **Envío** is a set of handy tools to simplify dealing with Elixir
 [`Registry`](https://hexdocs.pm/elixir/master/Registry.html). It includes
 the instance of `Registry` to be used out of the box, scaffolds for
 producing _publishers_ and _subscribers_.
