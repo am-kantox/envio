@@ -9,7 +9,7 @@ Simply add `envio` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:envio, "~> 0.1"}
+    {:envio, "~> 0.3"}
   ]
 end
 ```

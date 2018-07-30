@@ -32,10 +32,11 @@ defmodule Envio.MixProject do
     [
       # backends
       {:slack, "~> 0.14"},
+      {:iteraptor, "~> 1.0"},
       {:jason, "~> 1.0"},
       {:httpoison, "~> 0.11 or ~> 1.0"},
       # utilities
-      {:credo, "~> 0.9", only: :dev},
+      {:credo, "~> 0.10", only: :dev},
       {:ex_doc, "~> 0.18", only: :dev, override: true}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},

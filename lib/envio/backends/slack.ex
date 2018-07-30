@@ -13,7 +13,9 @@ defmodule Envio.Slack do
          {level, message} <- Utils.get_delete(message, :level, :info),
          {icon, message} <- Utils.get_delete(message, :icon, slack_icon(level)) do
       fields =
-        Enum.map(message, fn {k, v} ->
+        message
+        |> Iteraptor.to_flatmap()
+        |> Enum.map(fn {k, v} ->
           v = Utils.smart_to_binary(v)
           %{
             title: k,

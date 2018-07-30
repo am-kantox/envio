@@ -19,8 +19,8 @@ defmodule Envio.Test do
 
   test "#dispatch with explicit channel" do
     assert capture_io(fn ->
-             Spitter.spit(:foo, %{bar: 42})
-           end) == "Sucked: %{bar: 42}\n"
+             Spitter.spit(:foo, %{bar: %{baz: 42}})
+           end) == "Sucked: %{bar: %{baz: 42}}\n"
   end
 
   test "#pub_sub with initial channels" do
@@ -38,7 +38,7 @@ defmodule Envio.Test do
     assert capture_io(fn ->
              with {:ok, _pid} <- PubSucker.start_link() do
                PubSucker.subscribe(%Envio.Channel{source: Spitter, name: :main})
-               Spitter.spit(:main, %{bar: 42, long: "blah blah blah blah blah blah blah blah"})
+               Spitter.spit(:main, %{bar: %{baz: 42}, long: "blah blah blah blah blah blah blah blah"})
                # to allow message delivery delay
                Process.sleep(500)
                GenServer.stop(PubSucker)
