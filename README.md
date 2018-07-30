@@ -61,6 +61,10 @@ defmodule PubSucker do
 end
 ```
 
+## Changelog
+
+* `0.3.0` → `Envio.Backend` and infrastructure for backends; `Slack` as an example.
+
 ## ToDo
 
 * Back pressure with [`GenStage`](https://hexdocs.pm/gen_stage/GenStage.html)
