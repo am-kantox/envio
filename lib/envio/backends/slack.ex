@@ -53,9 +53,9 @@ defmodule Envio.Slack do
 
 
   @impl true
-  def on_envio(message) do
-    case Utils.get_delete(message, :meta) do
-      {%{hook_url: hook_url}, message} ->
+  def on_envio(message, meta) do
+    case meta do
+      %{hook_url: hook_url} ->
         HTTPoison.post(
           hook_url,
           format(message),

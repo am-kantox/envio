@@ -49,12 +49,12 @@ Simply register the handler anywhere in the code:
 
 ```elixir
 Envio.register(
-  {MySub, :on_envio}, # the function of arity 1 must exist
+  {MySub, :on_envio}, # the function of arity 2 must exist
   dispatch: %Envio.Channel{source: MyPub, name: :main}
 )
 ```
 
-As `MyPub` publishes to the `:main` channel, `MySub.on_envio/1` will
+As `MyPub` publishes to the `:main` channel, `MySub.on_envio/2` will
 be called with a message passed as parameter.
 
 #### ▶ [`:pub_sub`](https://hexdocs.pm/elixir/master/Registry.html#module-using-as-a-pubsub)

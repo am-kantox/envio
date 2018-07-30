@@ -20,13 +20,13 @@ config :envio, :backends, %{
 }
 ```
 `Envio.Slack`, used as a key, is a name of the module that implements the
-`Envio.Backend` behaviour (currently it’s the single function 
-[`Envio.Backend.on_envio/1`](Envio.Backend.html#c:on_envio/1)
+`Envio.Backend` behaviour (currently it’s the single function
+[`Envio.Backend.on_envio/2`](Envio.Backend.html#c:on_envio/2)
 that receives a message when published by the publisher.) The value assigned
 to the key is a map of `{Envio.Publisher, :channel}` tuples to the list of
 arguments that will be injected into the message under `:meta` key.
 
-When the publisher emits, say, 
+When the publisher emits, say,
 `%{title: "Pi reminder", text: "Recall pi value now!", pi: 3.14}` _envío_,
 the `%{meta: %{hook_url: "my_slack_hook_url"}}` will be merged into the
 message for the further processing by the backend. Typically, the backend
@@ -67,7 +67,7 @@ config :envio, :backends, %{
     {MyApp.MyModule, :main_channel} => [
       # one might simply put a channel name here as binary,
       #  but I don’t recommend that since it’s kinda credentials
-      hook_url: {:system, "SLACK_ENVIO_HOOK_URL"} 
+      hook_url: {:system, "SLACK_ENVIO_HOOK_URL"}
     ]
   }
 }
@@ -77,7 +77,7 @@ Well, that’s it. Your application is now Slack-enabled.
 
 ### Example from `Envío` tests
 
-To test Envío’s backend functionality I used plain old good `IO.inspect` 
+To test Envío’s backend functionality I used plain old good `IO.inspect`
 backend with `ExUnit.CaptureIO` as a checker:
 
 ```elixir
@@ -87,7 +87,7 @@ defmodule Envio.IOBackend do
   @behaviour Envio.Backend
 
   @impl true
-  def on_envio(message) do
+  def on_envio(message, meta) do
     IO.inspect(message, label: "[★Envío★]")
   end
 end

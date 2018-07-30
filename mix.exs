@@ -3,7 +3,7 @@ defmodule Envio.MixProject do
 
   @app :envio
   @app_name "envío"
-  @version "0.3.1"
+  @version "0.3.2"
 
   def project do
     [

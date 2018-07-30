@@ -7,5 +7,5 @@ defmodule Envio.Backend do
   @doc """
   The callback when the envio is received.
   """
-  @callback on_envio(message :: %{required(:atom) => term()}) :: {:ok, term()} | {:error, term()}
+  @callback on_envio(message :: %{required(:atom) => term()}, meta :: %{required(:atom) => term()}) :: {:ok, term()} | {:error, term()}
 end

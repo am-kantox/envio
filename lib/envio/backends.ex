@@ -29,7 +29,7 @@ defmodule Envio.Backends do
 
             @impl true
             def handle_envio(message, state) do
-              apply(unquote(module), :on_envio, [Map.put(message, :meta, Enum.into(unquote(opts), %{}))])
+              apply(unquote(module), :on_envio, [message, Enum.into(unquote(opts), %{})])
               {:noreply, state}
             end
           end
