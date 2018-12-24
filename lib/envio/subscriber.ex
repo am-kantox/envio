@@ -52,7 +52,7 @@ defmodule Envio.Subscriber do
           restart = Keyword.get(overrides, :restart, :permanent)
           shutdown = Keyword.get(overrides, :shutdown, 500)
 
-          quote do
+          quote location: :keep do
             def child_spec(opts) do
               %{
                 id: __MODULE__,
@@ -110,6 +110,7 @@ defmodule Envio.Subscriber do
       @behaviour Envio.Subscriber
 
       unquote(ast)
+      unquote(checker)
 
       @namespace Macro.underscore(__MODULE__)
       @fq_joiner "."

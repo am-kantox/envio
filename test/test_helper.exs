@@ -51,7 +51,7 @@ defmodule Envio.IOBackend do
   @behaviour Envio.Backend
 
   @impl true
-  def on_envio(message, meta) do
+  def on_envio(message, _meta) do
     IO.inspect({message, message[:pid]}, label: "[★Envío★]")
     Process.send(message[:pid], :on_envio_called, [])
   end

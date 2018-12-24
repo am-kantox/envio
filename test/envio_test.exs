@@ -46,6 +46,16 @@ defmodule Envio.Test do
            end) =~ ~r/PubSucked: {%{bar: %{baz: 42}}/
   end
 
+  test "#pub_sub with incomplete declaration raises" do
+    assert_raise Envio.InconsistentUsing,
+                 ~r|Missing: \[:start_link\]|,
+                 fn ->
+                   defmodule IncompleteGenServer do
+                     use Envio.Subscriber, as: :barebone
+                   end
+                 end
+  end
+
   test "#pub_sub with late subscribe" do
     assert capture_io(fn ->
              with {:ok, _pid} <- PubSucker.start_link() do

@@ -107,4 +107,22 @@ defmodule Envio.Utils do
   def smart_to_binary(whatever) do
     if String.Chars.impl_for(whatever), do: to_string(whatever), else: inspect(whatever)
   end
+
+  @doc false
+  def subscriber_finalizer(env, _bytecode) do
+    interface = env.module.__info__(:functions)
+    mandatory = ~w|start_link handle_envio handle_info|a
+    presented = interface |> Keyword.take(mandatory) |> Keyword.keys()
+
+    unless 3 <= Enum.count(presented) do
+      raise Envio.InconsistentUsing,
+        who: env.module,
+        reason: ~s"""
+        The module #{env.module} does not provide one of mandatory functions for Subscriber.
+
+          Required: #{inspect(mandatory)}.
+          Missing: #{inspect(mandatory -- presented)}.
+        """
+    end
+  end
 end
