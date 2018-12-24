@@ -3,7 +3,7 @@ defmodule Envio.MixProject do
 
   @app :envio
   @app_name "envio"
-  @version "0.4.2"
+  @version "0.4.3"
 
   def project do
     [
@@ -23,7 +23,7 @@ defmodule Envio.MixProject do
   def application do
     [
       mod: {Envio.Application, []},
-      extra_applications: [:logger]
+      extra_applications: [:logger, :ssl]
     ]
   end
 
