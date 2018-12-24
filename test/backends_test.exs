@@ -1,6 +1,5 @@
 defmodule Envio.Backends.Test do
   use ExUnit.Case, async: true
-  import ExUnit.CaptureIO
   doctest Envio.Backends
 
   test "#pub_sub with backend" do
