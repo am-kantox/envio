@@ -7,16 +7,17 @@ defmodule Envio.Slack do
 
   @spec format(%{required(:atom) => term()}) :: binary()
   defp format(%{} = message) do
-    with {title, message} <- Utils.get_delete(message, :title),
-         {text, message} <- Utils.get_delete(message, :text),
-         {body, message} <- Utils.get_delete(message, :message),
-         {level, message} <- Utils.get_delete(message, :level, :info),
-         {icon, message} <- Utils.get_delete(message, :icon, slack_icon(level)) do
+    with {title, message} <- Map.pop(message, :title),
+         {text, message} <- Map.pop(message, :text),
+         {body, message} <- Map.pop(message, :message),
+         {level, message} <- Map.pop(message, :level, :info),
+         {icon, message} <- Map.pop(message, :icon, slack_icon(level)) do
       fields =
         message
         |> Iteraptor.to_flatmap()
         |> Enum.map(fn {k, v} ->
           v = Utils.smart_to_binary(v)
+
           %{
             title: k,
             value: v,
@@ -46,22 +47,25 @@ defmodule Envio.Slack do
         mrkdwn: true,
         attachments: [attachments]
       }
-      |> Map.merge(if text, do: %{text: text}, else: %{})
+      |> Map.merge(if title, do: %{description: title}, else: %{})
       |> Jason.encode!()
     end
   end
 
-
   @impl true
-  def on_envio(message, meta) do
+  def on_envio(%{} = message, meta) do
     case meta do
       %{hook_url: hook_url} ->
-        HTTPoison.post(
-          hook_url,
-          format(message),
-          [{"Content-Type", "application/json"}]
-        )
-      _ -> {:error, :no_hook_url_in_envio}
+        json =
+          message
+          |> format()
+          |> Jason.encode!()
+          |> to_charlist()
+
+        :httpc.request(:post, {to_charlist(hook_url), [], 'application/json', json}, [], [])
+
+      _ ->
+        {:error, :no_hook_url_in_envio}
     end
   end
 
@@ -71,8 +75,10 @@ defmodule Envio.Slack do
   defp slack_icon(:info), do: ":information_source:"
   defp slack_icon(:warn), do: ":warning:"
   defp slack_icon(:error), do: ":exclamation:"
+
   defp slack_icon(level) when is_binary(level),
     do: level |> String.to_existing_atom() |> slack_icon()
+
   defp slack_icon(_), do: slack_icon(:info)
 
   defp slack_color(:debug), do: "#AAAAAA"
