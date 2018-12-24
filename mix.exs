@@ -2,8 +2,8 @@ defmodule Envio.MixProject do
   use Mix.Project
 
   @app :envio
-  @app_name "envío"
-  @version "0.4.0"
+  @app_name "envio"
+  @version "0.4.1"
 
   def project do
     [
