@@ -59,7 +59,6 @@ defmodule Envio.Slack do
         json =
           message
           |> format()
-          |> Jason.encode!()
           |> to_charlist()
 
         :httpc.request(:post, {to_charlist(hook_url), [], 'application/json', json}, [], [])
