@@ -187,7 +187,7 @@ defmodule Envio.Subscriber do
 
           # TODO Maybe support :dispatch here as well?
           {kind, channel} ->
-            raise(InconsistentUsing,
+            raise(Envio.InconsistentUsing,
               who: "#{__MODULE__}.subscribe/1",
               reason: "Wrong type #{kind} for channel #{inspect(channel)}. Must be :pub_sub."
             )
