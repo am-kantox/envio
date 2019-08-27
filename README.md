@@ -63,6 +63,10 @@ end
 
 ## Changelog
 
+* `0.5.0` → removed a dependency from `Slack` package
+
+* `0.4.0` → better docs and other enhancements
+
 * `0.3.0` → `Envio.Backend` and infrastructure for backends; `Slack` as an example.
 
 ## ToDo

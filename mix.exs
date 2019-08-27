@@ -3,7 +3,7 @@ defmodule Envio.MixProject do
 
   @app :envio
   @app_name "envio"
-  @version "0.4.7"
+  @version "0.5.0"
 
   def project do
     [
@@ -31,7 +31,6 @@ defmodule Envio.MixProject do
   defp deps do
     [
       # backends
-      {:slack, "~> 0.14"},
       {:iteraptor, "~> 1.0"},
       {:jason, "~> 1.0"},
       # utilities
