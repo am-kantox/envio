@@ -84,19 +84,4 @@ defmodule Envio.Slack do
   defp slack_color(:info), do: "good"
   defp slack_color(:warn), do: "#FF9900"
   defp slack_color(:error), do: "danger"
-
-  #############################################################################
-
-  defp meet_level?(lvl, min), do: compare_levels(lvl, min) != :lt
-
-  defp compare_levels(level, level), do: :eq
-  defp compare_levels(_level, nil), do: :gt
-
-  defp compare_levels(left, right),
-    do: if(level_to_number(left) > level_to_number(right), do: :gt, else: :lt)
-
-  defp level_to_number(:debug), do: 0
-  defp level_to_number(:info), do: 1
-  defp level_to_number(:warn), do: 2
-  defp level_to_number(:error), do: 3
 end
