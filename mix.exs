@@ -66,6 +66,9 @@ defmodule Envio.MixProject do
     [
       name: @app,
       files: ~w|config lib mix.exs README.md|,
+      source_ref: "v#{@ver}",
+      source_url: "https://github.com/am-kantox/#{@app}",
+      canonical: "http://hexdocs.pm/#{@app}",
       maintainers: ["Aleksei Matiushkin"],
       licenses: ["MIT"],
       links: %{
