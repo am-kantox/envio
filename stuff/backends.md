@@ -86,7 +86,7 @@ defmodule Envio.IOBackend do
 
   @behaviour Envio.Backend
 
-  @impl true
+  @impl Envio.Backend
   def on_envio(message, meta) do
     IO.inspect(message, label: "[★Envío★]")
   end

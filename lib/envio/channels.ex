@@ -25,8 +25,8 @@ defmodule Envio.Channels do
   @doc """
   Get list of active subscriptions.
   """
-  @spec state() :: %State{}
-  def state(), do: GenServer.call(__MODULE__, :state)
+  @spec state :: %State{}
+  def state, do: GenServer.call(__MODULE__, :state)
 
   @doc """
   Registers new channel.
@@ -70,10 +70,10 @@ defmodule Envio.Channels do
   end
 
   defp do_register(host, {:dispatch, channel}, acc) do
-    with {:ok, _} <-
-           Registry.register(Envio.Registry, Envio.Channel.fq_name(channel), {:dispatch, host}) do
-      MapSet.put(acc, {:dispatch, channel})
-    else
+    case Registry.register(Envio.Registry, Envio.Channel.fq_name(channel), {:dispatch, host}) do
+      {:ok, _} ->
+        MapSet.put(acc, {:dispatch, channel})
+
       error ->
         Logger.warn(
           "Failed to register dispatcher #{inspect(channel)}. Error: #{inspect(error)}."

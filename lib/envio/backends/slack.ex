@@ -52,7 +52,7 @@ defmodule Envio.Slack do
     end
   end
 
-  @impl true
+  @impl Envio.Backend
   def on_envio(%{} = message, meta) do
     case meta do
       %{hook_url: hook_url} ->

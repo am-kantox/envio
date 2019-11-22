@@ -36,14 +36,19 @@ defmodule Envio.Subscriber do
   @doc """
   The callback to subscribe stuff to `Envio`.
   """
-  @callback handle_envio(message :: :timeout | term(), state :: State.t()) ::
+  @callback handle_envio(message :: :timeout | term(), state :: Envio.State.t()) ::
               {:noreply, new_state}
               | {:noreply, new_state, timeout() | :hibernate | {:continue, term()}}
               | {:stop, reason :: term(), new_state}
-            when new_state: State.t()
+            when new_state: Envio.State.t()
 
   defmacro __using__(opts \\ []) do
-    checker = quote(location: :keep, do: @after_compile({Envio.Utils, :subscriber_finalizer}))
+    checker =
+      quote(
+        location: :keep,
+        generated: true,
+        do: @after_compile({Envio.Utils, :subscriber_finalizer})
+      )
 
     ast =
       case Keyword.get(opts, :as, :gen_server) do
@@ -52,7 +57,7 @@ defmodule Envio.Subscriber do
           restart = Keyword.get(overrides, :restart, :permanent)
           shutdown = Keyword.get(overrides, :shutdown, 500)
 
-          quote location: :keep do
+          quote generated: true, location: :keep do
             def child_spec(opts) do
               %{
                 id: __MODULE__,
@@ -100,13 +105,13 @@ defmodule Envio.Subscriber do
                         %Envio.Channel{source: source, name: channel}
                       end)
 
-            @impl true
+            @impl GenServer
             @doc false
             def init(%Envio.State{} = state), do: do_subscribe(@channels, state)
           end
       end
 
-    quote location: :keep do
+    quote generated: true, location: :keep do
       @behaviour Envio.Subscriber
 
       unquote(ast)
@@ -116,7 +121,7 @@ defmodule Envio.Subscriber do
       @fq_joiner "."
       @max_messages Application.get_env(:envio, :subscriber_queue_size, 10)
 
-      @impl true
+      @impl Envio.Subscriber
       @doc """
       Default implementation of the callback invoked when the message is received.
       """
@@ -147,7 +152,7 @@ defmodule Envio.Subscriber do
 
       ##########################################################################
 
-      @impl true
+      @impl GenServer
       @doc false
       @spec handle_call(
               {:subscribe, channels :: [%Envio.Channel{}]},
@@ -155,14 +160,16 @@ defmodule Envio.Subscriber do
               state :: %Envio.State{}
             ) :: {:reply, %MapSet{}, %Envio.State{}}
       def handle_call({:subscribe, [_ | _] = channels}, _from, %Envio.State{} = state) do
-        with {:ok, %Envio.State{subscriptions: subscriptions}} <- do_subscribe(channels, state) do
-          {:reply, subscriptions[__MODULE__], state}
-        else
-          error -> {:reply, {:error, error}, state}
+        case do_subscribe(channels, state) do
+          {:ok, %Envio.State{subscriptions: subscriptions}} ->
+            {:reply, subscriptions[__MODULE__], state}
+
+          error ->
+            {:reply, {:error, error}, state}
         end
       end
 
-      @impl true
+      @impl GenServer
       @doc false
       def handle_info({:envio, {channel, message}}, state),
         do: handle_envio(message, state)
@@ -185,7 +192,7 @@ defmodule Envio.Subscriber do
               {:pub_sub, __MODULE__}
             )
 
-          # TODO Maybe support :dispatch here as well?
+          # Maybe support :dispatch here as well?
           {kind, channel} ->
             raise(Envio.InconsistentUsing,
               who: "#{__MODULE__}.subscribe/1",

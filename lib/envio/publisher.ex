@@ -45,11 +45,11 @@ defmodule Envio.Publisher do
       @registry_kind Keyword.get(opts, :type, :both)
       @channel opts[:channel]
 
-      @impl true
+      @impl Envio.Publisher
       def broadcast(channel, %{} = message) when is_binary(channel),
         do: do_broadcast(@registry_kind, channel, message)
 
-      @impl true
+      @impl Envio.Publisher
       def broadcast(channel, %{} = message) when is_atom(channel),
         do: channel |> Atom.to_string() |> broadcast(message)
 

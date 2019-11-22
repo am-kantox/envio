@@ -11,7 +11,7 @@ end
 defmodule PubSucker do
   use Envio.Subscriber, channels: [{Spitter, :foo}]
 
-  @impl true
+  @impl Envio.Subscriber
   def handle_envio(message, state) do
     {:noreply, state} = super(message, state)
     IO.inspect({message, state}, label: "PubSucked")
@@ -29,12 +29,12 @@ defmodule ExistingGenServer do
   def start_link(opts \\ []),
     do: GenServer.start_link(__MODULE__, %Envio.State{options: opts}, name: __MODULE__)
 
-  @impl true
+  @impl GenServer
   @doc false
   def init(%Envio.State{} = state),
     do: do_subscribe([%Envio.Channel{source: Spitter, name: :foo}], state)
 
-  @impl true
+  @impl Envio.Subscriber
   def handle_envio(message, state) do
     {:noreply, state} = super(message, state)
     IO.inspect({message, state}, label: "PubSucked")
@@ -50,7 +50,7 @@ defmodule Envio.IOBackend do
 
   @behaviour Envio.Backend
 
-  @impl true
+  @impl Envio.Backend
   def on_envio(message, _meta) do
     IO.inspect({message, message[:pid]}, label: "[★Envío★]")
     Process.send(message[:pid], :on_envio_called, [])

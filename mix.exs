@@ -3,7 +3,7 @@ defmodule Envio.MixProject do
 
   @app :envio
   @app_name "envio"
-  @version "0.6.1"
+  @version "0.6.2"
 
   def project do
     [
@@ -15,7 +15,12 @@ defmodule Envio.MixProject do
       xref: [exclude: []],
       description: description(),
       deps: deps(),
-      docs: docs()
+      aliases: aliases(),
+      docs: docs(),
+      dialyzer: [
+        plt_file: {:no_warn, ".dialyzer/plts/dialyzer.plt"},
+        ignore_warnings: ".dialyzer/ignore.exs"
+      ]
     ]
   end
 
@@ -34,8 +39,20 @@ defmodule Envio.MixProject do
       {:iteraptor, "~> 1.0"},
       {:jason, "~> 1.0"},
       # utilities
-      {:credo, "~> 1.0", only: :dev},
+      {:credo, "~> 1.0", only: [:dev, :ci]},
+      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev, :ci], runtime: false},
       {:ex_doc, "~> 0.19", only: :dev, override: true}
+    ]
+  end
+
+  defp aliases do
+    [
+      quality: ["format", "credo --strict", "dialyzer"],
+      "quality.ci": [
+        "format --check-formatted",
+        "credo --strict",
+        "dialyzer --halt-exit-status"
+      ]
     ]
   end
 
@@ -58,7 +75,7 @@ defmodule Envio.MixProject do
     ]
   end
 
-  defp docs() do
+  defp docs do
     [
       main: @app_name,
       source_ref: "v#{@version}",

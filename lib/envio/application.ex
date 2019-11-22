@@ -2,6 +2,7 @@ defmodule Envio.Application do
   @moduledoc false
   use Application
 
+  @spec start(Application.app(), Application.restart_type()) :: Supervisor.on_start()
   def start(_type, _args) do
     children = [
       %{
