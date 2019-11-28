@@ -12,6 +12,8 @@ defmodule Envio.MixProject do
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       package: package(),
+      elixirc_paths: elixirc_paths(Mix.env()),
+      preferred_cli_env: ["test.cluster": :test],
       xref: [exclude: []],
       description: description(),
       deps: deps(),
@@ -38,6 +40,7 @@ defmodule Envio.MixProject do
       # backends
       {:iteraptor, "~> 1.0"},
       {:jason, "~> 1.0"},
+      {:phoenix_pubsub, "~> 1.0", runtime: false},
       # utilities
       {:credo, "~> 1.0", only: [:dev, :ci]},
       {:dialyxir, "~> 1.0.0-rc.6", only: [:dev, :ci], runtime: false},
@@ -66,7 +69,7 @@ defmodule Envio.MixProject do
     [
       name: @app,
       files: ~w|config lib mix.exs README.md|,
-      source_ref: "v#{@ver}",
+      source_ref: "v#{@version}",
       source_url: "https://github.com/am-kantox/#{@app}",
       canonical: "http://hexdocs.pm/#{@app}",
       maintainers: ["Aleksei Matiushkin"],
@@ -103,4 +106,8 @@ defmodule Envio.MixProject do
       ]
     ]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:dev), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 end

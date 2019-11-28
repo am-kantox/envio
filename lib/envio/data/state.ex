@@ -6,12 +6,14 @@ defmodule Envio.State do
 
   @typedoc "Internal state of everything amongst Envío."
   @type t :: %__MODULE__{
+          pid: pid(),
           subscriptions: map(),
           messages: [term()],
           options: keyword()
         }
 
-  defstruct subscriptions: %{},
+  defstruct pid: nil,
+            subscriptions: %{},
             messages: [],
             options: []
 end

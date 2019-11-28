@@ -52,6 +52,8 @@ defmodule Envio.Test do
                  fn ->
                    defmodule IncompleteGenServer do
                      use Envio.Subscriber, as: :barebone
+                     use GenServer
+                     def init(init_arg), do: {:ok, init_arg}
                    end
                  end
   end
