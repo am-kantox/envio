@@ -8,7 +8,7 @@ defmodule Envio.Channel do
   @typedoc "Channel data stored as a struct"
   @type t :: %__MODULE__{
           source: binary() | atom(),
-          name: binary()
+          name: binary() | atom()
         }
 
   @spec fq_name(t()) :: binary()

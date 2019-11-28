@@ -24,17 +24,27 @@ defmodule ExistingGenServer do
 
   use GenServer
 
-  @spec start_link(list()) ::
-          {:ok, pid()} | :ignore | {:error, {:already_started, pid()} | term()}
+  @spec start_link(keyword()) :: GenServer.on_start()
+  @doc false
   def start_link(opts \\ []),
     do: GenServer.start_link(__MODULE__, %Envio.State{options: opts}, name: __MODULE__)
 
   @impl GenServer
   @doc false
   def init(%Envio.State{} = state),
-    do: do_subscribe([%Envio.Channel{source: Spitter, name: :foo}], state)
+    do: {:ok, state, {:continue, :connect}}
+
+  @impl GenServer
+  @doc false
+  def handle_continue(:connect, %Envio.State{} = state) do
+    {:ok, %Envio.State{} = state} =
+      do_subscribe([%Envio.Channel{source: Spitter, name: :foo}], state)
+
+    {:noreply, state}
+  end
 
   @impl Envio.Subscriber
+  @doc false
   def handle_envio(message, state) do
     {:noreply, state} = super(message, state)
     IO.inspect({message, state}, label: "PubSucked")
