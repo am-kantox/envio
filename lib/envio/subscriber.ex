@@ -216,9 +216,9 @@ defmodule Envio.Subscriber do
       @doc false
       @spec handle_call(
               {:subscribe, channels :: [%Envio.Channel{}]},
-              pid(),
-              state :: %Envio.State{}
-            ) :: {:reply, %MapSet{}, %Envio.State{}}
+              GenServer.from(),
+              state :: Envio.State.t()
+            ) :: {:reply, %MapSet{}, Envio.State.t()}
       def handle_call({:subscribe, [_ | _] = channels}, _from, %Envio.State{} = state) do
         case do_subscribe(channels, state) do
           {:ok, %Envio.State{subscriptions: subscriptions}} ->

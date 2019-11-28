@@ -21,6 +21,8 @@ defmodule Envio.MixProject do
       docs: docs(),
       dialyzer: [
         plt_file: {:no_warn, ".dialyzer/plts/dialyzer.plt"},
+        plt_add_deps: :transitive,
+        plt_add_apps: [:phoenix_pubsub],
         ignore_warnings: ".dialyzer/ignore.exs"
       ]
     ]
