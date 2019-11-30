@@ -19,6 +19,7 @@ defmodule Envio.Application do
           ]
         }
       },
+      %{id: Envio.PG2, start: {Phoenix.PubSub.PG2, :start_link, [[name: Envio.PG2]]}},
       %{id: Envio.Channels, start: {Envio.Channels, :start_link, []}},
       %{id: Envio.Backends, start: {Envio.Backends, :start_link, []}}
     ]
