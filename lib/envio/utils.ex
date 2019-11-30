@@ -125,4 +125,14 @@ defmodule Envio.Utils do
         """
     end
   end
+
+  @spec format_envio(channel :: binary(), message :: map()) :: {:envio, {binary(), map()}}
+  defp format_envio(channel, message), do: {:envio, {channel, message}}
+
+  @spec channel_message(module :: module(), channel :: binary(), message :: map()) ::
+          {binary(), {:envio, {binary(), map()}}}
+  def channel_message(module, channel, message) do
+    channel = fq_name(module, channel)
+    {channel, format_envio(channel, message)}
+  end
 end

@@ -5,9 +5,9 @@ config :envio, :env_value, {:system, "FOO"}
 
 config :envio, :backends, %{
   # Envio.Slack => %{
-  #   {Spitter, :main} => [
+  #   {Spitter.Registry, :main} => [
   #     hook_url: {:system, "SLACK_ENVIO_HOOK_URL"}
   #   ]
   # },
-  Envio.IOBackend => %{{Spitter, :backends} => []}
+  Envio.IOBackend => %{{Spitter.Registry, :backends} => []}
 }

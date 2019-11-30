@@ -37,36 +37,31 @@ defmodule Envio.Publisher do
   @callback broadcast(channel :: binary() | atom(), message :: map()) :: :ok
 
   defmacro __using__(opts \\ []) do
-    manager =
-      Module.concat([
-        "Envio",
-        "Publishers",
-        opts |> Keyword.get(:manager, :registry) |> to_string() |> Macro.camelize()
-      ])
+    {manager, opts} = Keyword.pop(opts, :manager, :registry)
 
-    kind = Keyword.get(opts, :kind, :both)
+    manager = Module.concat(["Envio", "Publishers", Macro.camelize("#{manager}")])
 
-    quote do
+    quote location: :keep, generated: true do
       require Logger
 
       @behaviour Envio.Publisher
 
       @channel unquote(opts)[:channel]
 
-      use unquote(manager), kind: unquote(kind), options: Keyword.get(unquote(opts), :options, [])
+      use unquote(manager), unquote(opts)
 
       @impl Envio.Publisher
       def broadcast(channel, %{} = message) when is_binary(channel) or is_atom(channel),
-        do: do_broadcast(unquote(kind), "#{channel}", message)
+        do: do_broadcast("#{channel}", message)
 
       if is_binary(@channel) or is_atom(@channel) do
         @spec broadcast(message :: map()) :: :ok
         def broadcast(%{} = message), do: broadcast(@channel, message)
       end
 
-      defoverridable broadcast: 2
-
       ##########################################################################
+
+      defoverridable broadcast: 2
     end
   end
 end

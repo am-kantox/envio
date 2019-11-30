@@ -94,14 +94,14 @@ end
 ```
 
 The above is a fully valid backend implementation, that subscribes to the `:backends` channel
-of the `Spitter` ckass defined in `test_helper.exs` (the excerpt is from `test.exs` config):
+of the `Spitter.Registry` ckass defined in `test_helper.exs` (the excerpt is from `test.exs` config):
 
 ```elixir
 config :envio, :backends, %{
-  Envio.IOBackend => %{{Spitter, :backends} => []}
+  Envio.IOBackend => %{{Spitter.Registry, :backends} => []}
 }
 ```
-Once emitted by `Spitter`, this message will be published to the standard output:
+Once emitted by `Spitter.Registry`, this message will be published to the standard output:
 
 ```elixir
 [★Envío★]: %{bar: 42, meta: %{}}

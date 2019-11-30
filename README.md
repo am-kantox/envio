@@ -22,7 +22,7 @@ Use `Envio.Publisher` helper to scaffold the registry publisher. It provides
 `broadcast/2` helper (and `brodcast/1` if the default channel is set.)
 
 ```elixir
-defmodule Spitter do
+defmodule Spitter.Registry do
   use Envio.Publisher, channel: :main
 
   def spit(channel, what), do: broadcast(channel, what)
@@ -37,7 +37,7 @@ Just register your handler anywhere in the code:
 ```elixir
 Envio.register(
   {Sucker, :suck},
-  dispatch: %Envio.Channel{source: Spitter, name: :foo}
+  dispatch: %Envio.Channel{source: Spitter.Registry, name: :foo}
 )
 ```
 
@@ -51,7 +51,7 @@ collects last 10 messages in it’s state.
 
 ```elixir
 defmodule PubSucker do
-  use Envio.Subscriber, channels: [{Spitter, :foo}]
+  use Envio.Subscriber, channels: [{Spitter.Registry, :foo}]
 
   def handle_envio(message, state) do
     {:noreply, state} = super(message, state)
