@@ -7,7 +7,7 @@ defmodule Spitter.Registry do
 end
 
 defmodule Spitter.PG2 do
-  use Envio.Publisher, manager: :phoenix_pub_sub, channel: :main
+  use Envio.Publisher, manager: :phoenix_pub_sub, adapter: :pg2, channel: "main"
   def spit(channel, what), do: broadcast(channel, what)
   def spit(what), do: broadcast(what)
 end
@@ -25,6 +25,19 @@ defmodule PubSucker do
   def handle_envio(message, state) do
     {:noreply, state} = super(message, state)
     IO.inspect({message, state}, label: "PubSucked")
+    {:noreply, state}
+  end
+end
+
+defmodule PG2Sucker do
+  @moduledoc false
+
+  use Envio.Subscriber, manager: :phoenix_pub_sub, channels: ["main"]
+
+  @impl Envio.Subscriber
+  def handle_envio(message, state) do
+    {:noreply, state} = super(message, state)
+    IO.inspect({message, state}, label: "PG2Sucked")
     {:noreply, state}
   end
 end
@@ -62,14 +75,14 @@ end
 #   end
 # end
 
-defmodule Envio.IOBackend do
+defmodule Envio.IOBackend.Registry do
   @moduledoc false
 
   @behaviour Envio.Backend
 
   @impl Envio.Backend
   def on_envio(message, _meta) do
-    IO.inspect({message, message[:pid]}, label: "[★Envío★]")
+    IO.inspect({message, message[:pid]}, label: "[★Envío Reg★]")
 
     case Process.send(message[:pid], :on_envio_called, []) do
       :ok -> {:ok, message[:pid]}
@@ -78,15 +91,18 @@ defmodule Envio.IOBackend do
   end
 end
 
-defmodule Envio.Phoenix do
+defmodule Envio.IOBackend.PG2 do
   @moduledoc false
 
-  use Envio.Subscriber, manager: :phoenix_pub_sub, channels: ["foo"]
+  @behaviour Envio.Backend
 
-  @impl Envio.Subscriber
-  def handle_envio(message, state) do
-    {:noreply, state} = super(message, state)
-    IO.inspect({message, state}, label: "PubSucked")
-    {:noreply, state}
+  @impl Envio.Backend
+  def on_envio(message, _meta) do
+    IO.inspect({message, message[:pid]}, label: "[★Envío PG2★]")
+
+    case Process.send(message[:pid], :on_envio_called, []) do
+      :ok -> {:ok, message[:pid]}
+      error -> {:error, error}
+    end
   end
 end

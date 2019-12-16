@@ -17,6 +17,8 @@ defmodule Envio.Backends do
                     _ -> [consumer]
                   end
 
+                {manager, opts} = Keyword.pop(opts, :manager, :registry)
+
                 opts =
                   Enum.map(opts, fn {k, v} ->
                     {k, Envio.Utils.config_value(v).()}
@@ -26,6 +28,7 @@ defmodule Envio.Backends do
                   quote do
                     use Envio.Subscriber,
                       module: unquote(handler_module),
+                      manager: unquote(manager),
                       channels: unquote(consumer)
 
                     @impl Envio.Subscriber

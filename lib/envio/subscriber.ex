@@ -129,7 +129,7 @@ defmodule Envio.Subscriber do
 
       @impl GenServer
       @doc false
-      def handle_info({:envio, {channel, message}}, state),
+      def handle_info({:envio, {_channel, message}}, state),
         do: handle_envio(message, state)
     end
   end

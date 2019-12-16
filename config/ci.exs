@@ -10,4 +10,5 @@ config :envio, :backends, %{
   #   ]
   # },
   Envio.IOBackend => %{{Spitter.Registry, :backends} => []}
+  # Envio.IOBackend => %{{Spitter.PG2, :backends} => []}
 }
