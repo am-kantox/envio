@@ -25,6 +25,8 @@ defmodule Envio.Publisher do
   or called back with the function provided on subscription
   ([`:dispatch`](https://hexdocs.pm/elixir/master/Registry.html#module-using-as-a-dispatcher)).
 
+  Since `v0.8.0` `Envío` supports [`Phoenix.PubSub`](https://hexdocs.pm/phoenix_pubsub) for distributed message broadcasting.
+
   The publisher does not wrap [`:via`](https://hexdocs.pm/elixir/master/Registry.html#module-using-in-via)
   functionality since it makes not much sense.
 

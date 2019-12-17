@@ -1,7 +1,7 @@
 defmodule Envio.Publishers.Registry do
   @moduledoc false
   defmacro __using__(opts \\ []) do
-    {adapter, _opts} = Keyword.pop(opts, :adapter, :both)
+    {adapter, _opts} = Keyword.pop(opts, :adapter, :pub_sub)
 
     quote location: :keep, generated: true do
       @adapter unquote(adapter)

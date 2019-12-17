@@ -17,11 +17,8 @@ defmodule Envio.Publishers.PhoenixPubSub do
       defp do_broadcast(:pg2, channel, %{} = message),
         do: Phoenix.PubSub.broadcast(Envio.PG2, channel, {:envio, {channel, message}})
 
-      defp do_broadcast(:redis, channel, %{} = message) do
-        raise "Not implemented"
-
-        Phoenix.PubSub.broadcast(Envio.Redis, channel, message)
-      end
+      defp do_broadcast(:redis, channel, %{} = message),
+        do: Phoenix.PubSub.broadcast(Envio.Redis, channel, message)
     end
   end
 end

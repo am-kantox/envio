@@ -9,6 +9,6 @@ config :envio, :backends, %{
   #     hook_url: {:system, "SLACK_ENVIO_HOOK_URL"}
   #   ]
   # },
-  Envio.IOBackend => %{{Spitter.Registry, :backends} => []}
-  # Envio.IOBackend => %{{Spitter.PG2, :backends} => []}
+  Envio.IOBackend.Registry => %{{Spitter.Registry, :backends} => []},
+  Envio.IOBackend.PG2 => %{"main" => [manager: :phoenix_pub_sub]}
 }

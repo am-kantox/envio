@@ -106,3 +106,11 @@ Once emitted by `Spitter.Registry`, this message will be published to the standa
 ```elixir
 [★Envío★]: %{bar: 42, meta: %{}}
 ```
+
+For distributed backend over `Phoenix.PubSub.PG2` one might use the following config:
+
+```elixir
+config :envio, :backends, %{
+  Envio.IOBackend.PG2 => %{"main" => [manager: :phoenix_pub_sub]}
+}
+```
