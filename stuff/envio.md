@@ -81,7 +81,7 @@ defmodule PubSucker do
 end
 ```
 
-#### ▶ [`:phoenix_pub_sub`]((https://hexdocs.pm/phoenix_pubsub)
+#### ▶ [`:phoenix_pub_sub`](https://hexdocs.pm/phoenix_pubsub)
 
 Use `manager: :phoenix_pub_sub` for distributed message broadcasting. The implementation below subscribes to `"main"` channel in the distributed OTP environment and prints out each subsequent incoming message to standard output.
 
