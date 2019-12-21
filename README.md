@@ -61,7 +61,35 @@ defmodule PubSucker do
 end
 ```
 
+### Phoenix.PubSub subscriber [`:phoenix_pub_sub`](https://hexdocs.pm/phoenix_pubsub)
+
+Use `manager: :phoenix_pub_sub` for distributed message broadcasting. The implementation below subscribes to `"main"` channel in the distributed OTP environment and prints out each subsequent incoming message to standard output.
+
+```elixir
+defmodule Pg2Sucker do
+  use Envio.Subscriber, channels: ["main"], manager: :phoenix_pub_sub
+
+  def handle_envio(message, state) do
+    {:noreply, state} = super(message, state)
+    IO.inspect({message, state}, label: "Received")
+    {:noreply, state}
+  end
+end
+```
+
+The publisher this subscriber might be listening to would look like
+
+```elixir
+defmodule Pg2Spitter do
+  use Envio.Publisher, manager: :phoenix_pub_sub, channel: "main"
+  def spit(channel, what), do: broadcast(channel, what)
+  def spit(what), do: broadcast(what)
+end
+```
+
 ## Changelog
+
+* `0.8.0` → `Phoenix.PubSub` support (+ backend)
 
 * `0.5.0` → removed a dependency from `Slack` package
 
