@@ -19,11 +19,30 @@ defmodule Envio.Application do
           ]
         }
       },
-      %{id: Envio.PG2, start: {Phoenix.PubSub.PG2, :start_link, [[name: Envio.PG2]]}},
+      phoenix_pubsub_spec(),
       %{id: Envio.Channels, start: {Envio.Channels, :start_link, []}},
       %{id: Envio.Backends, start: {Envio.Backends, :start_link, []}}
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one)
+  end
+
+  defp phoenix_pubsub_spec() do
+    with {:ok, [:phoenix_pubsub]} <- Application.ensure_all_started(:phoenix_pubsub) do
+      :phoenix_pubsub
+      |> Application.spec(:vsn)
+      |> to_string()
+      |> Version.compare("2.0.0")
+      |> case do
+        :lt ->
+          %{
+            id: Envio.PG2,
+            start: {Phoenix.PubSub.PG2, :start_link, [[name: Envio.PG2]]}
+          }
+
+        _ ->
+          {Phoenix.PubSub, name: Envio.PG2}
+      end
+    end
   end
 end
