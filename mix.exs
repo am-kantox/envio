@@ -3,7 +3,7 @@ defmodule Envio.MixProject do
 
   @app :envio
   @app_name "envio"
-  @version "0.9.0"
+  @version "0.9.1"
 
   def project do
     [
@@ -44,9 +44,9 @@ defmodule Envio.MixProject do
       {:jason, "~> 1.0"},
       {:phoenix_pubsub, "~> 1.0 or ~> 2.0", runtime: false},
       # utilities
-      {:credo, "~> 1.0", only: [:dev, :ci]},
+      {:credo, "~> 1.0", only: [:dev, :ci], runtime: false},
       {:dialyxir, "~> 1.0.0-rc.6", only: [:dev, :ci], runtime: false},
-      {:ex_doc, "~> 0.19", only: :dev, override: true}
+      {:ex_doc, "~> 0.19", only: :dev, runtime: false}
     ]
   end
 

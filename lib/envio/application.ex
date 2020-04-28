@@ -28,21 +28,21 @@ defmodule Envio.Application do
   end
 
   defp phoenix_pubsub_spec do
-    with :ok <- Application.load(:phoenix_pubsub) do
-      :phoenix_pubsub
-      |> Application.spec(:vsn)
-      |> to_string()
-      |> Version.compare("2.0.0")
-      |> case do
-        :lt ->
-          %{
-            id: Envio.PG2,
-            start: {Phoenix.PubSub.PG2, :start_link, [[name: Envio.PG2]]}
-          }
+    Application.load(:phoenix_pubsub)
 
-        _ ->
-          {Phoenix.PubSub, name: Envio.PG2}
-      end
+    :phoenix_pubsub
+    |> Application.spec(:vsn)
+    |> to_string()
+    |> Version.compare("2.0.0")
+    |> case do
+      :lt ->
+        %{
+          id: Envio.PG2,
+          start: {Phoenix.PubSub.PG2, :start_link, [[name: Envio.PG2]]}
+        }
+
+      _ ->
+        {Phoenix.PubSub, name: Envio.PG2}
     end
   end
 end
