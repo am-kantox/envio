@@ -27,8 +27,8 @@ defmodule Envio.Application do
     Supervisor.start_link(children, strategy: :one_for_one)
   end
 
-  defp phoenix_pubsub_spec() do
-    with {:ok, [:phoenix_pubsub]} <- Application.ensure_all_started(:phoenix_pubsub) do
+  defp phoenix_pubsub_spec do
+    with :ok <- Application.load(:phoenix_pubsub) do
       :phoenix_pubsub
       |> Application.spec(:vsn)
       |> to_string()
