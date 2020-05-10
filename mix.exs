@@ -75,7 +75,7 @@ defmodule Envio.MixProject do
       source_url: "https://github.com/am-kantox/#{@app}",
       canonical: "http://hexdocs.pm/#{@app}",
       maintainers: ["Aleksei Matiushkin"],
-      licenses: ["MIT"],
+      licenses: ["Kantox LTD"],
       links: %{
         "GitHub" => "https://github.com/am-kantox/#{@app}",
         "Docs" => "https://hexdocs.pm/#{@app}"
