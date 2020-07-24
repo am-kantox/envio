@@ -1,6 +1,6 @@
-# ![Logo](/stuff/logo-48x48.png?raw=true) Envío
+# ![Logo](/stuff/logo-48x48.png?raw=true) Envío    [![Kantox ❤ OSS](https://img.shields.io/badge/❤-kantox_oss-informational.svg)](https://kantox.com/)  ![Test](https://github.com/am-kantox/envio/workflows/Test/badge.svg)  ![Dialyzer](https://github.com/am-kantox/envio/workflows/Dialyzer/badge.svg)
 
-[![CircleCI](https://circleci.com/gh/am-kantox/envio.svg?style=svg)](https://circleci.com/gh/am-kantox/envio)     **application-wide registry with handy helpers to ease dispatching**
+**Application-wide registry with handy helpers to ease dispatching.**
 
 ## Installation
 
@@ -89,18 +89,15 @@ end
 
 ## Changelog
 
-* `0.8.0` → `Phoenix.PubSub` support (+ backend)
-
-* `0.5.0` → removed a dependency from `Slack` package
-
-* `0.4.0` → better docs and other enhancements
-
-* `0.3.0` → `Envio.Backend` and infrastructure for backends; `Slack` as an example.
+- **`0.8.0`** → `Phoenix.PubSub` support (+ backend)
+- **`0.5.0`** → removed a dependency from `Slack` package
+- **`0.4.0`** → better docs and other enhancements
+- **`0.3.0`** → `Envio.Backend` and infrastructure for backends; `Slack` as an example.
 
 ## ToDo
 
-* Back pressure with [`GenStage`](https://hexdocs.pm/gen_stage/GenStage.html)
-for `:dispatch` kind of delivery;
-* Set of backends for easy delivery (_slack_, _redis_, _rabbit_, etc.)
+- Back pressure with [`GenStage`](https://hexdocs.pm/gen_stage/GenStage.html)
+  for `:dispatch` kind of delivery;
+- Set of backends for easy delivery (_slack_, _redis_, _rabbit_, etc.)
 
 ## [Documentation](https://hexdocs.pm/envio)
