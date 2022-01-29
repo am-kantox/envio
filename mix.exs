@@ -45,7 +45,7 @@ defmodule Envio.MixProject do
       {:phoenix_pubsub, "~> 1.0 or ~> 2.0"},
       # utilities
       {:credo, "~> 1.0", only: [:dev, :ci], runtime: false},
-      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev, :ci], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev, :ci], runtime: false},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false}
     ]
   end
