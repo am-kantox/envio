@@ -81,14 +81,16 @@ defmodule Envio.IOBackend.Registry do
   @behaviour Envio.Backend
 
   @impl Envio.Backend
-  def on_envio(message, _meta) do
-    IO.inspect({message, message[:pid]}, label: "[★Envío Reg★]")
+  def on_envio(%{pid: pid} = message, _meta) do
+    IO.inspect({message, pid}, label: "[★Envío Reg★]")
 
-    case Process.send(message[:pid], :on_envio_called, []) do
-      :ok -> {:ok, message[:pid]}
+    case Process.send(pid, :on_envio_called, []) do
+      :ok -> {:ok, pid}
       error -> {:error, error}
     end
   end
+
+  def on_envio(_message, _meta), do: {:error, :no_callback}
 end
 
 defmodule Envio.IOBackend.PG2 do
@@ -105,4 +107,24 @@ defmodule Envio.IOBackend.PG2 do
       error -> {:error, error}
     end
   end
+end
+
+defmodule Envio.ProcessBackendHandler do
+  @moduledoc false
+
+  use GenServer
+
+  def start_link, do: GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
+
+  @impl GenServer
+  def init(%{} = init_arg), do: {:ok, init_arg}
+
+  @impl GenServer
+  def handle_info(%{callback: pid} = message, state) do
+    IO.inspect(message, label: "[★Envío Process★]")
+    Process.send(pid, :on_envio_called, [])
+    {:noreply, state}
+  end
+
+  def handle_info(_message, state), do: {:noreply, state}
 end

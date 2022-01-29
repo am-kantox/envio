@@ -11,4 +11,11 @@ defmodule Envio.Backends.Test do
     Spitter.PG2.spit("main", %{bar: 42, pid: self()})
     assert_receive :on_envio_called, 1_000
   end
+
+  test "process backend" do
+    {:ok, pid} = Envio.ProcessBackendHandler.start_link()
+    Spitter.Registry.spit(:process, %{bar: 42, callback: self()})
+    assert_receive :on_envio_called, 1_000
+    GenServer.stop(pid)
+  end
 end

@@ -33,7 +33,13 @@ defmodule Envio.Backends do
 
                     @impl Envio.Subscriber
                     def handle_envio(message, state) do
-                      apply(unquote(module), :on_envio, [message, Enum.into(unquote(opts), %{})])
+                      {meta, message} = Map.split(message, [:__meta__])
+
+                      apply(unquote(module), :on_envio, [
+                        message,
+                        Enum.into(unquote(opts), meta || %{})
+                      ])
+
                       {:noreply, state}
                     end
                   end

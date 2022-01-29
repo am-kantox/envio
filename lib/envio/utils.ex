@@ -60,6 +60,7 @@ defmodule Envio.Utils do
   def config_value(nil), do: fn -> nil end
   def config_value({:system, env_var}), do: fn -> System.get_env(env_var) end
   def config_value(var) when is_binary(var), do: fn -> var end
+  def config_value(var) when is_atom(var), do: fn -> var end
 
   ##############################################################################
 
