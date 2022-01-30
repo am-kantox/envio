@@ -88,7 +88,7 @@ defmodule Envio.Subscriber do
 
       @namespace Macro.underscore(__MODULE__)
       @fq_joiner "."
-      @max_messages Application.get_env(:envio, :subscriber_queue_size, 10)
+      @max_messages Application.compile_env(:envio, :subscriber_queue_size, 10)
 
       @impl Envio.Subscriber
       @doc """

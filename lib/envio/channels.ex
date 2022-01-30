@@ -25,14 +25,14 @@ defmodule Envio.Channels do
   @doc """
   Get list of active subscriptions.
   """
-  @spec state :: %State{}
+  @spec state :: State.t()
   def state, do: GenServer.call(__MODULE__, :state)
 
   @doc """
   Registers new channel.
   """
-  @spec register(atom() | {atom(), atom()}, list({atom(), %Channel{}})) ::
-          :ok | {:error, {:already_registered, %Channel{}}}
+  @spec register(atom() | {atom(), atom()}, list({atom(), Channel.t()})) ::
+          :ok | {:error, {:already_registered, Channel.t()}}
   def register(host, channels),
     do: GenServer.call(__MODULE__, {:register, {host, channels}})
 

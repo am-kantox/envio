@@ -5,7 +5,7 @@ defmodule Envio.Backends do
 
   require Logger
 
-  @backends Application.get_env(:envio, :backends, [])
+  @backends Application.compile_env(:envio, :backends, [])
 
   @children Enum.flat_map(@backends, fn {module, consumers} ->
               handler_module = Module.concat(module, Handler)
@@ -20,9 +20,12 @@ defmodule Envio.Backends do
                 {manager, opts} = Keyword.pop(opts, :manager, :registry)
 
                 opts =
-                  Enum.map(opts, fn {k, v} ->
+                  opts
+                  |> Enum.map(fn {k, v} ->
                     {k, Envio.Utils.config_value(v).()}
                   end)
+                  |> Map.new()
+                  |> Macro.escape()
 
                 contents =
                   quote do
@@ -33,12 +36,9 @@ defmodule Envio.Backends do
 
                     @impl Envio.Subscriber
                     def handle_envio(message, state) do
-                      {meta, message} = Map.split(message, [:__meta__])
+                      {meta, message} = Map.pop(message, :__meta__, %{})
 
-                      apply(unquote(module), :on_envio, [
-                        message,
-                        Enum.into(unquote(opts), meta || %{})
-                      ])
+                      unquote(module).on_envio(message, Map.merge(unquote(opts), meta))
 
                       {:noreply, state}
                     end
