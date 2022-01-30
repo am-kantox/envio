@@ -89,6 +89,7 @@ end
 
 ## Changelog
 
+- **`0.10.0`** → `Process` backend
 - **`0.8.0`** → `Phoenix.PubSub` support (+ backend)
 - **`0.5.0`** → removed a dependency from `Slack` package
 - **`0.4.0`** → better docs and other enhancements
