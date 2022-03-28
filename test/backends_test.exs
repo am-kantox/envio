@@ -18,4 +18,9 @@ defmodule Envio.Backends.Test do
     assert_receive :on_envio_called, 1_000
     GenServer.stop(pid)
   end
+
+  test "runtime options" do
+    System.put_env("SLACK_ENVIO_HOOK_URL", "url")
+    assert %{hook_url: "url"} = Envio.Slack.Handler.default_options()
+  end
 end

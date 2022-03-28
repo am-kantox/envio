@@ -19,14 +19,6 @@ defmodule Envio.Backends do
 
                 {manager, opts} = Keyword.pop(opts, :manager, :registry)
 
-                opts =
-                  opts
-                  |> Enum.map(fn {k, v} ->
-                    {k, Envio.Utils.config_value(v).()}
-                  end)
-                  |> Map.new()
-                  |> Macro.escape()
-
                 contents =
                   quote do
                     use Envio.Subscriber,
@@ -34,11 +26,20 @@ defmodule Envio.Backends do
                       manager: unquote(manager),
                       channels: unquote(consumer)
 
+                    @spec default_options :: map()
+                    def default_options do
+                      unquote(opts)
+                      |> Enum.map(fn {k, v} ->
+                        {k, Envio.Utils.config_value(v).()}
+                      end)
+                      |> Map.new()
+                    end
+
                     @impl Envio.Subscriber
                     def handle_envio(message, state) do
                       {meta, message} = Map.pop(message, :__meta__, %{})
 
-                      unquote(module).on_envio(message, Map.merge(unquote(opts), meta))
+                      unquote(module).on_envio(message, Map.merge(default_options(), meta))
 
                       {:noreply, state}
                     end

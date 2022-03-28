@@ -75,6 +75,15 @@ end
 #   end
 # end
 
+defmodule Envio.Slack do
+  @moduledoc false
+
+  @behaviour Envio.Backend
+
+  @impl Envio.Backend
+  def on_envio(message, _meta), do: {:ok, message}
+end
+
 defmodule Envio.IOBackend.Registry do
   @moduledoc false
 
