@@ -72,6 +72,7 @@ defmodule Envio.Slack do
   defp slack_icon(:debug), do: ":speaker:"
   defp slack_icon(:info), do: ":information_source:"
   defp slack_icon(:warn), do: ":warning:"
+  defp slack_icon(:warning), do: slack_icon(:warn)
   defp slack_icon(:error), do: ":exclamation:"
 
   defp slack_icon(level) when is_binary(level),
@@ -82,5 +83,6 @@ defmodule Envio.Slack do
   defp slack_color(:debug), do: "#AAAAAA"
   defp slack_color(:info), do: "good"
   defp slack_color(:warn), do: "#FF9900"
+  defp slack_color(:warning), do: slack_color(:warn)
   defp slack_color(:error), do: "danger"
 end

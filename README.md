@@ -89,6 +89,7 @@ end
 
 ## Changelog
 
+- **`0.10.2`** → Accept `:warning` alongside `:warn`
 - **`0.10.1`** → Runtime configs for backends via `{:system, value}` tuples
 - **`0.10.0`** → `Process` backend
 - **`0.8.0`** → `Phoenix.PubSub` support (+ backend)
