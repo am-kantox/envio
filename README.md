@@ -9,7 +9,7 @@ Simply add `envio` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:envio, "~> 0.3"}
+    {:envio, "~> 1.0"}
   ]
 end
 ```
@@ -89,6 +89,7 @@ end
 
 ## Changelog
 
+- **`1.0.0`** → Modern Elixir v1.16 update, no more features planned
 - **`0.10.2`** → Accept `:warning` alongside `:warn`
 - **`0.10.1`** → Runtime configs for backends via `{:system, value}` tuples
 - **`0.10.0`** → `Process` backend

@@ -29,3 +29,5 @@ envio-*.tar
 
 .exenv-version
 
+/.elixir-tools/
+

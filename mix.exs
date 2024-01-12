@@ -3,7 +3,7 @@ defmodule Envio.MixProject do
 
   @app :envio
   @app_name "envio"
-  @version "0.10.2"
+  @version "1.0.0"
 
   def project do
     [
@@ -21,7 +21,7 @@ defmodule Envio.MixProject do
       docs: docs(),
       dialyzer: [
         plt_file: {:no_warn, ".dialyzer/plts/dialyzer.plt"},
-        plt_add_deps: :transitive,
+        plt_add_deps: :app_tree,
         plt_add_apps: [:phoenix_pubsub],
         ignore_warnings: ".dialyzer/ignore.exs"
       ]

@@ -97,7 +97,7 @@ defmodule Envio.Utils do
       iex> Envio.Utils.smart_to_binary(42)
       "42"
       iex> Envio.Utils.smart_to_binary(%{foo: :bar, baz: 42})
-      "%{baz: 42, foo: :bar}"
+      "%{foo: :bar, baz: 42}"
       iex> Envio.Utils.smart_to_binary([foo: :bar, baz: 42])
       "[foo: :bar, baz: 42]"
   """

@@ -75,7 +75,7 @@ defmodule Envio.Channels do
         MapSet.put(acc, {:dispatch, channel})
 
       error ->
-        Logger.warn(
+        Logger.warning(
           "Failed to register dispatcher #{inspect(channel)}. Error: #{inspect(error)}."
         )
 

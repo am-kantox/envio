@@ -60,7 +60,7 @@ defmodule Envio.Slack do
           |> format()
           |> :erlang.binary_to_list()
 
-        :httpc.request(:post, {to_charlist(hook_url), [], 'application/json', json}, [], [])
+        :httpc.request(:post, {to_charlist(hook_url), [], ~c"application/json", json}, [], [])
 
       _ ->
         {:error, :no_hook_url_in_envio}

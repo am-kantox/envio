@@ -18,7 +18,7 @@ defmodule Envio.Test do
                long: "blah blah blah blah blah blah blah blah"
              })
            end) ==
-             ~s|Sucked: %{bar: %{baz: 42}, long: "blah blah blah blah blah blah blah blah"}\n|
+             ~s|Sucked: %{long: "blah blah blah blah blah blah blah blah", bar: %{baz: 42}}\n|
   end
 
   test "#dispatch with explicit channel" do
@@ -75,6 +75,6 @@ defmodule Envio.Test do
                Process.sleep(500)
                GenServer.stop(PubSucker)
              end
-           end) =~ ~r/PubSucked: {%{bar: %{baz: 42}, long/
+           end) =~ ~r/PubSucked: {%{long: /
   end
 end
